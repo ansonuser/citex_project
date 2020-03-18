@@ -1,0 +1,99 @@
+.center {
+    text-align: center;
+    margin: 0 auto;
+    color: #42180F;
+}
+.mybody {
+    background-color:white;
+}
+
+form {
+    margin:auto;
+    display: table;
+}
+
+.placeholder
+{
+    color: red;
+    font-weight: bold;
+}
+
+.field-icon {
+    float: right;
+    margin-left: -25px;
+    margin-top: -25px;
+    position: relative;
+    z-index: 2;
+  }
+
+.container{
+    padding-top: 1%;
+    margin: auto;
+  }
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: content-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+}
+.card-body {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1.25rem;
+}
+.input-group-addon {
+border-left-width: 0;
+border-right-width: 0;
+}
+.input-group-addon:first-child {
+border-left-width: 1px;
+}
+.input-group-addon:last-child {
+border-right-width: 1px;
+}
+
+/* .themed-container {
+    padding:15px;
+    border: 1px solid red;
+    
+} */
+
+.container-fuild {
+    width: 80%;
+    margin: auto;
+}
+
+
+.card-fuild {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #f8f9fa;
+    /* background-clip: content-box; */
+    border: 1px solid #dee2e6;
+    border-radius: 1rem;
+}
+
+
+.card-body-table {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 0.5rem;
+    background-color: slategray;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
+/* .input-group-btn1 {
+    position: relative;
+    font-size: 0;
+    white-space: nowrap;
+    padding-left:1em; 
+    padding-top:1.8em;
+} */

@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+
+{% block div %}
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">        
+        <li><a href="{% url 'select_data:index' %}">Home</a></li>
+        <li><a href="{% url 'select_data:insert' %}">新增訂單</a></li> 
+        <li class="active"><a href="{% url 'select_data:select' %}">出貨單</a></li>
+        <li><a href="{% url 'select_data:record' %}">庫存</a></li> 
+        </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <form　method="post">
+                    <div class="form-group col-sm-8">
+                        <label for="company"> 公司名稱:</label>
+                        <input type="text" id="company" name="company" class="form-control" placeholder="公司名稱">
+                    </div>
+                    <div class="form-group col-sm-8">
+                        <label for="site" >廠區:</label>
+                        <input type="text" id="site" name="site" class="form-control" placeholder="廠區">
+                    </div>
+
+                    
+                    <div class="form-group col-sm-8">
+                        <label for="time_interval_min">選擇時間區間:</label>
+                        <div class="input-group">
+                            <input type="date" name = "time_interval_min" class="form-control"/>
+                            <span class="input-group-addon">-</span>
+                            <input type="date" name = "time_interval_max" class="form-control"/>
+                        </div>
+                    </div>      
+        
+                    <div class="col-sm-8 col-xs-8">
+                        <br><br>
+                        <div style="text-align:right; margin: 0 auto; width:100%">
+                            <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#poptable">送出</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="poptable" tabindex="-1" role="tableresult" aria-labelledby="selectresult" style="display: none;" aria-hidden="true"> 
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" id="selectresult">查詢結果
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body" style="background-color: white;">
+                <table class="table" style="background-color: white;">
+                    <thread>
+                        <th scope="col">#</th>
+                        <th scope="col">公司</th>
+                        <th scope="col">廠區</th>
+                        <th scope="col">窗口</th>
+                        <th scope="col">產品</th>
+                        <th scope="col">PO NO</th>
+                        <th scope="col">數量</th>
+                        <th scope="col">接單日期</th>
+                        <th scope="col">預期出貨日期</th>
+                        <th scope="col">備註</th>
+                        <th scope="col">加入時間</th>
+                        <th scope="col">實際出貨日期</th>
+                        <th scope="col">完成</th>
+                    </thread>
+                    <tbody>
+                        {% for eachform in formset%}
+                            <tr>
+                                <th scope="row">{{forloop.counter}}</th>
+                                {% for value in eachform %}
+                                    <td>{{value}}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">送出</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

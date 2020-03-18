@@ -1,0 +1,144 @@
+{% extends "layout.html" %}
+
+{% block div %}
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+        <li><a href="{% url 'select_data:index' %}">Home</a></li>
+        <li class="active"><a href="{% url 'select_data:insert' %}">新增訂單</a></li> 
+        <li><a href="{% url 'select_data:select' %}">出貨單</a></li>
+        <li><a href="{% url 'select_data:record' %}">庫存</a></li> 
+        </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <script>
+        function validatetime(){
+            var m1 = document.getElementById("get_date").value;
+            var m2 = document.getElementById("expect_date").value;
+            var company_name = document.getElementById("company_name").value;
+            var factory_site = document.getElementById("factory_site").value;
+            var people_name = document.getElementById("people_name").value;
+            var product_name = document.getElementById("product_name").value;
+            var product_amount = document.getElementById("product_amount").value;
+            var product_demand = document.getElementById("product_demand").value;
+            if (!company_name){
+                alert("公司名稱不能為空值");
+                return false;
+            }else if (!factory_site){
+                alert("廠區名稱不能為空值");
+                return false;
+            }else if (!people_name){
+                alert("人名不能為空值");
+                return false;
+            }else if (!product_name){
+                alert("產品名稱不能為空值");
+                return false;
+            }else if (!product_amount){
+                alert("產品數量不能為空值");
+                return false;
+            }else if (!product_demand){
+                alert("PO NO.不能為空值");
+                return false;
+            }else if (!m1 || !m2){
+                alert("日期不能為空值");
+                return false;
+            }else if (m1 > m2){
+                alert("接單日期需小於出貨日期");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <!-- <form method="post"> {% csrf_token %} -->
+                <form method="post" onsubmit="return validatetime()"> {% csrf_token %}
+
+                    <div class="form-group col-sm-4">
+                        <label for="company_name" >公司:</label>
+                        <input type="text" id="company_name" name="company_name" class="form-control" placeholder="公司">
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label for="factory_site" >廠區:</label>
+                        <input type="text" id="factory_site" name="factory_site" class="form-control" placeholder="公司">
+                    </div> 
+                    <div class="form-group col-sm-4">
+                        <label for="people_name" >人名:</label>
+                        <input type="text" id="people_name" name="people_name" class="form-control" placeholder="人名">
+                    </div>
+
+                    <div class="form-group col-sm-4">
+                        <label for="product_name" >產品名稱:</label>
+                        <input type="text" id="product_name" name="product_name" class="form-control" placeholder="產品名稱">
+                    </div>
+
+                    <div class="form-group col-sm-4">
+                        <label for="product_amount" >產品數量:</label>
+                        <input type="text" id="product_amount" name="product_amount" class="form-control" placeholder="產品數量">
+                    </div>
+
+                    <div class="form-group col-sm-4">
+                        <label for="product_demand" >Po No.:</label>
+                        <input type="text" id="product_demand" name="product_demand" class="form-control" placeholder="Po No">
+                    </div>
+                    
+                    <div class="form-group col-sm-6">
+                        <label for="get_date"> 接單日期: </label>
+                        <input type="date" id="get_date" name="get_date" class="form-control">
+                    </div>
+                    
+                    <div class="form-group col-sm-6">
+                        <label for="expect_date" >預計出貨日期:</label>
+                        <input type="date" id="expect_date" name="expect_date" class="form-control">
+                    </div>
+
+                    <div class="form-group col-sm-12">
+                        <label for="note" >備註</label>
+                        <input type="text" id="note" name="note" class="form-control" placeholder="備註">
+                    </div>
+
+                    <div class="col-sm-12 col-xs-12">
+                        <br>
+                        <div style="text-align:right; margin: 0 auto; width:100%">
+                            <button type="submit" class="btn btn-primary" >新增</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="conatainer-fuild" style="padding:30px">
+        <div class="card-fuild ">
+            <div class="card-body-table" >
+                <h1 class="center" style="color:black">最近新增</h1>
+            </div>
+            <table class="table">
+                <thread>
+                    <th scope="col">#</th>
+                    <th scope="col">公司</th>
+                    <th scope="col">廠區</th>
+                    <th scope="col">窗口</th>
+                    <th scope="col">產品</th>
+                    <th scope="col">PO NO</th>
+                    <th scope="col">數量</th>
+                    <th scope="col">接單日期</th>
+                    <th scope="col">預期出貨日期</th>
+                    <th scope="col">備註</th>
+                    <th scope="col">加入時間</th>
+                </thread>
+                <tbody>
+                    {% for eachform in formset%}
+                        <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            {% for value in eachform %}
+                                <td>{{value}}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

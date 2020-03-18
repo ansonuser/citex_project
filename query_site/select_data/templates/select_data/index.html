@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block div %}
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+        <li class="active"><a href="{% url 'select_data:index' %}">Home</a></li>
+        <li><a href="{% url 'select_data:insert' %}">新增訂單</a></li> 
+        <li><a href="{% url 'select_data:select' %}" >出貨單</a></li>
+        <li><a href="{% url 'select_data:record' %}">庫存</a></li> 
+        </ul>
+    </div>
+{% endblock %}
+{% block content %}
+    <script>
+        function assure()
+        {
+            let name = document.querySelector('#account').value;
+            if (name === ''){
+                alert('Account is required');
+                document.querySelector('#result').innerHTML = 'Login Failed!'
+            }else{
+                document.location.href='record/';
+                alert('Welcome, ' + name + '!');
+            }
+        }
+    </script>
+    <h1 class='center' id = "result">Login Page</h1>
+    <br>
+    <br>
+    <form  class='form' onsubmit="assure(); return false;">
+        <label for="account" class="col-sm-4 col-xs-4" style="text-align:right">Account:</label>
+        <input type="text" class="col-sm-8 col-xs-8" id="account" name="account" placeholder="帳號"><br><br>
+        <label for="password" class="col-sm-4 col-xs-4"  style="text-align:right">Password:</label>
+        <input type="password"  class="col-sm-8 col-xs-8" id="password-field" name="password" placeholder="密碼"><br><br><br>
+        <!-- <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span> -->
+        <div  style="text-align:right; margin: 0 auto; width:100%">
+            <button type="submit"> Login </button>
+        </div>
+    </form>
+{% endblock %}
+
+<!-- action = "record/"  -->
