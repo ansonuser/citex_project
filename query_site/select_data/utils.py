@@ -5,6 +5,7 @@ import os
 import datetime
 def make_connection(base_dir = os.path.dirname(os.getcwd() )):
     # cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    # print(os.path.join(base_dir,'db.sqlite3'))
     conn = sqlite3.connect(os.path.join(base_dir,'db.sqlite3'))
     return conn
 
@@ -31,8 +32,8 @@ def utils_insert_single(conn, insert_form,
 
         if value_ not in result:
             cursor.execute("""
-                INSERT INTO ({},{}) {} VALUES (?,)
-                """.format(input_id, fe, update_table), (value_,) )
+                INSERT INTO {} ({},{})  VALUES ((SELECT MAX({}) + 1 FROM {}),?)
+                """.format(update_table, input_id, fe, input_id, update_table), (value_,) )
             conn.commit()
         cursor.execute("""
             SELECT {} FROM {}

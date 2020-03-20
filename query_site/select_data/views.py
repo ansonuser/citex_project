@@ -56,10 +56,10 @@ def insert(request):
         
         succeed = utils_insert_relation(conn, insert_form, current_id_dict)
         conn.close()
-        if succeed:
-            print("update database")
-        else:
-            print("[Error] Fail to update database")
+        # if succeed:
+        #     print("update database")
+        # else:
+        #     print("[Error] Fail to update database")
         # display record
         result = Order_detail.record.recent_records()
         if insert_form.is_valid():

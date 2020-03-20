@@ -5,37 +5,65 @@
         <meta charset="utf-8">     
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{% static 'select_data/css/third_party/font-awesome/font-awesome.min.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'select_data/css/third_party/bootstrap/bootstrap.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'select_data/css/mycss/style.css' %}">
         <link rel="icon" HREF="{% static  'select_data/images/favicon.ico' %}"/>
-        <script src="{% static 'select_data/js/third_party/bootstrap/jquery.min.js' %}"></script>
+        <script src="{% static 'select_data/js/third_party/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'select_data/js/third_party/bootstrap/jquery-3.4.1.slim.min.js' %}"></script>
+        <script src="{% static 'select_data/js/third_party/bootstrap/popper.js' %}"></script>
+        <script src="{% static 'select_data/js/third_party/bootstrap/bootstrap.bundle.min.js' %}"></script>
         <script src="{% static 'select_data/js/third_party/bootstrap/bootstrap.min.js' %}"></script>
         <script src="{% static 'select_data/js/myjs/myjs.js' %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static 'select_data/css/third_party/bootstrap/bootstrap.min.css' %}">
         <title>Citex</title>
     </head>
     <body class='mybody'>
-
-        <nav class="navbar navbar-inverse">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span> 
-                    </button>
-                    <a class="navbar-brand" href="#">Citex</a>
-                </div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <a class="navbar-brand" href="#">Citex</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>      
                 {% block div %}
-                <div class="collapse navbar-collapse" id="myNavbar">
-                    <ul class="nav navbar-nav">
-                    <li class="active"><a href="{% url 'select_data:index' %}">Home</a></li>
-                    <li><a href="{% url 'select_data:insert' %}">新增訂單</a></li> 
-                    <li><a href="{% url 'select_data:select' %}">出貨單</a></li>
-                    <li><a href="{% url 'select_data:record' %}">庫存</a></li> 
+                <div class="collapse navbar-collapse show" id="myNavbar" style>
+                    <ul class="mr-auto navbar-nav">
+                        <li class="active nav-item">
+                            <a class="nav-link" href="{% url 'select_data:index' %}">
+                                Home 
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Dropdown
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                              <a class="dropdown-item" href="#">Action</a>
+                              <a class="dropdown-item" href="#">Another action</a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </li>
+                        <!-- <li class="nav-item dropdown">
+                            <a class="nva-link dropdown-toggle" href="#" id="navbarDropdown" role="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                新增訂單
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{% url 'select_data:insert' %}">預期訂單</a>
+                                <a class="dropdown-item" href="#">確認訂單</a>
+                            </div>
+                        </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'select_data:select' %}">
+                                出貨單
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'select_data:record' %}">
+                                庫存
+                            </a>
+                        </li> 
                     </ul>
                 </div>
                 {% endblock %}
-            </div>
         </nav>
 
         {% block content %}

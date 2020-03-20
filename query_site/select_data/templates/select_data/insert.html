@@ -1,14 +1,36 @@
 {% extends "layout.html" %}
 
 {% block div %}
-    <div class="collapse navbar-collapse" id="myNavbar">
-        <ul class="nav navbar-nav">
-        <li><a href="{% url 'select_data:index' %}">Home</a></li>
-        <li class="active"><a href="{% url 'select_data:insert' %}">新增訂單</a></li> 
-        <li><a href="{% url 'select_data:select' %}">出貨單</a></li>
-        <li><a href="{% url 'select_data:record' %}">庫存</a></li> 
-        </ul>
-    </div>
+<div class="collapse navbar-collapse" id="myNavbar">
+    <ul class="mr-auto navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'select_data:index' %}">
+                Home 
+                <span class="sr-only">(current)</span>
+            </a>
+        </li>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                新增訂單
+            </a>
+            <div class="dropdown-menu active" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{% url 'select_data:insert' %}">預期訂單</a>
+                <a class="dropdown-item" href="#">確認訂單</a>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'select_data:select' %}">
+                出貨單
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'select_data:record' %}">
+                庫存
+            </a>
+        </li> 
+    </ul>
+</div>
 {% endblock %}
 
 {% block content %}
@@ -56,50 +78,50 @@
                 <!-- <form method="post"> {% csrf_token %} -->
                 <form method="post" onsubmit="return validatetime()"> {% csrf_token %}
 
-                    <div class="form-group col-sm-4">
+                    <div class="form-group col-sm-4 col-lg-4 col-md-4">
                         <label for="company_name" >公司:</label>
                         <input type="text" id="company_name" name="company_name" class="form-control" placeholder="公司">
                     </div>
-                    <div class="form-group col-sm-4">
+                    <div class="form-group col-sm-4 col-lg-4 col-md-4">
                         <label for="factory_site" >廠區:</label>
                         <input type="text" id="factory_site" name="factory_site" class="form-control" placeholder="公司">
                     </div> 
-                    <div class="form-group col-sm-4">
+                    <div class="form-group col-sm-4 col-lg-4 col-md-4">
                         <label for="people_name" >人名:</label>
                         <input type="text" id="people_name" name="people_name" class="form-control" placeholder="人名">
                     </div>
 
-                    <div class="form-group col-sm-4">
+                    <div class="form-group col-sm-4 col-lg-4 col-md-4">
                         <label for="product_name" >產品名稱:</label>
                         <input type="text" id="product_name" name="product_name" class="form-control" placeholder="產品名稱">
                     </div>
 
-                    <div class="form-group col-sm-4">
+                    <div class="form-group col-sm-4 col-lg-4 col-md-4">
                         <label for="product_amount" >產品數量:</label>
                         <input type="text" id="product_amount" name="product_amount" class="form-control" placeholder="產品數量">
                     </div>
 
-                    <div class="form-group col-sm-4">
+                    <div class="form-group col-sm-4 col-lg-4 col-md-4">
                         <label for="product_demand" >Po No.:</label>
                         <input type="text" id="product_demand" name="product_demand" class="form-control" placeholder="Po No">
                     </div>
                     
-                    <div class="form-group col-sm-6">
+                    <div class="form-group col-sm-6 col-lg-6 col-md-6">
                         <label for="get_date"> 接單日期: </label>
                         <input type="date" id="get_date" name="get_date" class="form-control">
                     </div>
                     
-                    <div class="form-group col-sm-6">
+                    <div class="form-group col-sm-6 col-lg-6 col-md-6">
                         <label for="expect_date" >預計出貨日期:</label>
                         <input type="date" id="expect_date" name="expect_date" class="form-control">
                     </div>
 
-                    <div class="form-group col-sm-12">
+                    <div class="form-group col-sm-12 col-lg-12 col-md-12">
                         <label for="note" >備註</label>
                         <input type="text" id="note" name="note" class="form-control" placeholder="備註">
                     </div>
 
-                    <div class="col-sm-12 col-xs-12">
+                    <div class="col-sm-12 col-xs-12 col-lg-12 col-md-12">
                         <br>
                         <div style="text-align:right; margin: 0 auto; width:100%">
                             <button type="submit" class="btn btn-primary" >新增</button>
