@@ -1,38 +1,5 @@
 {% extends "layout.html" %}
 
-
-{% block div %}
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="mr-auto navbar-nav">
-        <li class="active nav-item">
-            <a class="nav-link" href="{% url 'select_data:index' %}">
-                Home 
-                <span class="sr-only">(current)</span>
-            </a>
-        </li>
-
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                新增訂單
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{% url 'select_data:insert' %}">預期訂單</a>
-                <a class="dropdown-item" href="#">確認訂單</a>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'select_data:select' %}">
-                出貨單
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'select_data:record' %}">
-                庫存
-            </a>
-        </li> 
-    </ul>
-</div>
-{% endblock %}
 {% block content %}
     <script>
         function assure()

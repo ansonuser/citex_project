@@ -1,84 +1,74 @@
 {% extends "layout.html" %}
 
-{% block div %}
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="mr-auto navbar-nav">
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'select_data:index' %}">
-                Home 
-                <span class="sr-only">(current)</span>
-            </a>
-        </li>
-
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                新增訂單
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{% url 'select_data:insert' %}">預期訂單</a>
-                <a class="dropdown-item" href="#">確認訂單</a>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'select_data:select' %}">
-                出貨單
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" href="{% url 'select_data:record' %}">
-                庫存
-            </a>
-        </li> 
-    </ul>
-</div>
-{% endblock %}
-
 {% block content %}
 
 <div class="container">
     <div class="card">
         <div class="card-body">
-            <form>
-                <div class="form-group col-sm-4">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"> 產品名稱:</span>
+            <form　method="POST">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="cproduct_name">產品名稱:</label>
+                        <input type="text" class="form-control" id="product_name">
                     </div>
-                    <input type="text" id="product_name" name="product_name" class="form-control" placeholder="產品名稱">
+                    <div class="form-group col-md-6">
+                        <label for="expire_date">有效日期:</label>
+                        <input type="date" class="form-control" id="expire_date">
+                    </div>
                 </div>
-                <div class="form-group col-sm-4">
-                    <label for="produced_date" >生產日期:</label>
-                    <input type="date" id="produced_date" name="produced_date" class="form-control" placeholder="生產日期">
+                <!-- <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="product_name" >產品名稱:</label>
+                        <input type="text" id="product_name" name="product_name" class="form-control" placeholder="產品名稱">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="produced_date" >生產日期:</label>
+                        <input type="date" id="produced_date" name="produced_date" class="form-control" placeholder="生產日期">
+                    </div>
+                </div> -->
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="product_no" >產品批號:</label>
+                        <input type="text" id="product_no" name="produced_date" class="form-control">
+                    </div>
+                    <div class="form-group col-md-6">
+                            <label for="num_in">進貨量:</label>
+                            <input type="number" class="form-control" value="1" />
+                    </div>
                 </div>
-          
-
-
-
-                <div class="input-group">
-                        <label for="num_rest">庫存量</label>
-                        <input type="number" class="form-control" value="1" />
-                        <!-- <button class= "pull-right">新增</button>           -->
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="product_status">商品狀態</label>
+                        <select class="form-control" id="product_status">
+                            <option>運送中</option>
+                            <option>已到貨</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-sm-12 col-xs-12">
-                    <br><br>
-                    <div style="text-align:right; margin: 0 auto; width:100%">
-                        <button type="submit" class="btn btn-primary"  >新增</button>
+                    <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem;">
+                            <button type="submit" class="btn btn-secondary">送出</button>
+                        </div>
+                        <div　class="btn-group mr-2" role="group" style="padding-top: 1.5rem;" >
+                            <button type="submit" class="btn btn-secondary">庫存表</button>
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<div class="conatainer-fuild" style="padding:30px">
-    <div class="card-fuild ">
+<div class="container" style="padding-top:3em;">
+    <div class="card-fuild">
         <div class="card-body-table" >
-            <h1 class="center" style="color:black">庫存</h1>
+            <h5 class="center" style="color:black">紀錄</h５>
         </div>
         <table class="table">
             <thread>
                 <th scope="col">#</th>
                 <th scope="col">產品</th>
-                <th scope="col">生產日期</th>
+                <th scope="col">有效期限</th>
                 <th scope="col">庫存量</th>
                 <th scope="col">已生產天數</th>
             </thread>

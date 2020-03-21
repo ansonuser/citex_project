@@ -1,73 +1,78 @@
 {% extends 'layout.html' %}
 
-{% block div %}
-<div class="collapse navbar-collapse" id="myNavbar">
-    <ul class="mr-auto navbar-nav">
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'select_data:index' %}">
-                Home 
-                <span class="sr-only">(current)</span>
-            </a>
-        </li>
-
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                新增訂單
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{% url 'select_data:insert' %}">預期訂單</a>
-                <a class="dropdown-item" href="#">確認訂單</a>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" href="{% url 'select_data:select' %}">
-                出貨單
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'select_data:record' %}">
-                庫存
-            </a>
-        </li> 
-    </ul>
-</div>
-{% endblock %}
-
 {% block content %}
     <div class="container">
         <div class="card">
             <div class="card-body">
                 <form　method="post">
-                    <div class="form-group col-sm-8">
-                        <label for="company"> 公司名稱:</label>
-                        <input type="text" id="company" name="company" class="form-control" placeholder="公司名稱">
-                    </div>
-                    <div class="form-group col-sm-8">
-                        <label for="site" >廠區:</label>
-                        <input type="text" id="site" name="site" class="form-control" placeholder="廠區">
-                    </div>
-
-                    
-                    <div class="form-group col-sm-8">
-                        <label for="time_interval_min">選擇時間區間:</label>
-                        <div class="input-group">
-                            <input type="date" name = "time_interval_min" class="form-control"/>
-                            <span class="input-group-addon">-</span>
-                            <input type="date" name = "time_interval_max" class="form-control"/>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="company_name">公司</label>
+                            <input type="text" class="form-control" id="company_name">
                         </div>
-                    </div>      
-        
-                    <div class="col-sm-8 col-xs-8">
-                        <br><br>
-                        <div style="text-align:right; margin: 0 auto; width:100%">
-                            <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#poptable">送出</button>
+                        <div class="form-group col-md-6">
+                            <label for="factory_site">廠區</label>
+                            <input type="text" class="form-control" id="factory_site">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <label for="time_interval_min">選擇時間區間:</label>
+                            <div class="input-group">
+                                <input type="date" name = "time_interval_min" class="form-control"/>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">-</span>
+                                </div>
+                                <input type="date" name = "time_interval_max" class="form-control"/>
+                            </div>
+                        </div>      
+                    </div>
+                    <div class="col-sm-8 col-xs-8" style="padding-top:1em">
+                        <div>
+                            <button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#poptable">送出</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="poptable" tabindex="-1" role="tableresult" aria-labelledby="selectresult" style="display: none;" aria-hidden="true"> 
+
+    <div class="container" style="padding-top:30pt;">
+        <div class="card">
+            <div class="card-body">
+                <form　method="post">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="company_name">公司</label>
+                            <input type="text" class="form-control" id="company_name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="factory_site">廠區</label>
+                            <input type="text" class="form-control" id="factory_site">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <label for="time_interval_min">選擇時間區間:</label>
+                            <div class="input-group">
+                                <input type="date" name = "time_interval_min" class="form-control"/>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">-</span>
+                                </div>
+                                <input type="date" name = "time_interval_max" class="form-control"/>
+                            </div>
+                        </div>      
+                    </div>
+                    <div class="col-sm-8 col-xs-8" style="padding-top:1em">
+                        <div>
+                            <button type="submit" class="btn btn-secondary" data-toggle="modal" data-target="#poptable">送出</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="modal fade" id="poptable" tabindex="-1" role="tableresult" aria-labelledby="selectresult" style="display: none;" aria-hidden="true"> 
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header" id="selectresult">查詢結果
@@ -109,5 +114,5 @@
                 <button type="button" class="btn btn-primary">送出</button>
             </div>
         </div>
-    </div>
+    </div> -->
 {% endblock %}

@@ -16,58 +16,58 @@
         <link rel="stylesheet" type="text/css" href="{% static 'select_data/css/third_party/bootstrap/bootstrap.min.css' %}">
         <title>Citex</title>
     </head>
-    <body class='mybody'>
+    <body style="background-color:lightgrey">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <a class="navbar-brand" href="#">Citex</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>      
-                {% block div %}
-                <div class="collapse navbar-collapse show" id="myNavbar" style>
-                    <ul class="mr-auto navbar-nav">
-                        <li class="active nav-item">
-                            <a class="nav-link" href="{% url 'select_data:index' %}">
-                                Home 
-                                <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+        
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                    <a class="nav-link"  href="{% url 'select_data:index' %}">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'select_data:record' %}">
+                            庫存
+                        </a>
+                    </li> 
+                    <li class="nav-item">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Dropdown
+                                訂單
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                              <a class="dropdown-item" href="#">Action</a>
-                              <a class="dropdown-item" href="#">Another action</a>
-                              <div class="dropdown-divider"></div>
-                              <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
+                            <a class="dropdown-item" href="{% url 'select_data:insert' %}">預期訂單</a>
+                            <a class="dropdown-item" href="{% url 'select_data:select' %}">確認訂單</a>
+                            <!-- <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                            </div> -->
                         </li>
-                        <!-- <li class="nav-item dropdown">
-                            <a class="nva-link dropdown-toggle" href="#" id="navbarDropdown" role="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                新增訂單
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{% url 'select_data:insert' %}">預期訂單</a>
-                                <a class="dropdown-item" href="#">確認訂單</a>
-                            </div>
-                        </li> -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'select_data:select' %}">
-                                出貨單
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'select_data:record' %}">
-                                庫存
-                            </a>
-                        </li> 
-                    </ul>
-                </div>
-                {% endblock %}
-        </nav>
-
-        {% block content %}
-        {% endblock %}
-        <!-- <img src="{% static 'myapp/images/images.jpg' %}" alt="Cat"> -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'select_data:select' %}">
+                            訂單
+                        </a>
+                    </li>
+                </ul>
+                <!-- <form class="form-inline">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+                </form> -->
+            </div>
+          </nav>
+          <div class="content"> 
+              <div class="row" style="padding-top: 3rem;">
+                  <div class="col-2"></div>
+                  <div class="col-8">
+                    {% block content %}
+                    {% endblock %}
+                  </div>
+                  <div class="col-2"></div>
+              </div> 
+          </div> 
     </body>
 </html>
+
+
