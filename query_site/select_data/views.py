@@ -12,6 +12,9 @@ from .utils import *
 def index(request):
     return render(request,'select_data/index.html')
 
+def expect_order(request):
+    return render(request,'select_data/expect_order.html')
+
 
 def record(request):
     result = Stock.record.recent_records()

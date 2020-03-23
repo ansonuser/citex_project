@@ -1,0 +1,90 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <form action="\" method="post"> {% csrf_token %}
+    
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="custom_no">客戶編號</label>
+                        <input type="text" class="form-control" id="custom_no">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="company">公司</label>
+                        <input type="text"class="form-control" id="company">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="site">廠區</label>
+                        <input type="text" class="form-control" id="site">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="contact_window">聯絡人</label>
+                        <input type="text" class="form-control" id="contact_window">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="ask_order_no">詢價編號</label>
+                        <input type="text" class="form-control" id="ask_order_no">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="pay_way">付款方式</label>
+                        <input type="text" class="form-control" id="pay_way">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="note_expect_order">備註</label>
+                        <input type="text" class="form-control" id="note_expect_order">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="ask_date">詢價時間</label>
+                        <input type="date" class="form-control" id="ask_date">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="demand_date">需求時間</label>
+                        <input type="date" class="form-control" id="demand_date">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="deadline">交貨期限</label>
+                        <input type="date" class="form-control" id="deadline">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="product_no">商品編號</label>
+                        <input type="text" class="form-control" id="product_no">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="demand_date">需求時間</label>
+                        <input type="date" class="form-control" id="demand_date">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="deadline">交貨期限</label>
+                        <input type="text" class="form-control" id="deadline">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="btn-toolbar pull-right" role="toolbar" arial-label="twbgs">
+                        <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
+                            <button type="submit" class="btn btn-secondary " >
+                                送出
+                            </button>                
+                        </div>
+                        <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
+                            <button class="btn btn-secondary" type="submit">
+                                庫存表   
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

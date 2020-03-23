@@ -25,29 +25,44 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                    <a class="nav-link"  href="{% url 'select_data:index' %}">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link"  href="{% url 'select_data:index' %}">Home <span class="sr-only">(current)</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'select_data:record' %}">
-                            庫存
-                        </a>
-                    </li> 
                     <li class="nav-item">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownorder" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 訂單
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url 'select_data:insert' %}">預期訂單</a>
-                            <a class="dropdown-item" href="{% url 'select_data:select' %}">確認訂單</a>
-                            <!-- <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                            </div> -->
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownorder">
+                                <a class="dropdown-item" href="{% url 'select_data:insert' %}">預期訂單</a>
+                                <a class="dropdown-item" href="{% url 'select_data:select' %}">實際訂單</a>
+                            </div> 
                         </li>
                     </li>
+
+                    <li class="nav-item">
+                        <li class="nav-item dropdown">
+                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownstock" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                庫存
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownstock">
+                                <a href="#" class="dropdown-item">新增庫存</a>
+                                <a href="#" class="dropdown-item">庫存修改</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">
+                                    庫存查詢
+                                </a>
+                            </div>
+                        </li>
+                    </li> 
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'select_data:record' %}">
+                            客戶
+                        </a>
+                    </li>
+     
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'select_data:select' %}">
-                            訂單
+                            商品
                         </a>
                     </li>
                 </ul>
