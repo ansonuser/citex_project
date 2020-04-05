@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% block left %}
+<div class="card" style="margin-top:1rem">
+    <div class="card-body">
+        <label for="rest_num">交期區間</label>
+        <input type="number" class="form-control" name="rest_num" id="rest_num1" min="0">
+        <br>
+        <input type="number" class="form-control" name="rest_num" id="rest_num2" min="1">
+    </div>
+    <div class="card-footer">
+        <div class="pull-right">
+            <button class="btn-secondary btn">選擇</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<script>
+    $(".active").removeClass("active");
+    $("#stock_bar").addClass("active");
+</script>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <div class="row" style="padding-top: 30px;">
+                <div class="col-md-7">
+                    <table class="table">
+                        <thread>
+                            <th scope="col">&nbsp;</th>
+                            <th scope="col">交期區間</th>
+                            <th scope="col">實際庫存</th>
+                            <th scope="col">在途庫存</th>
+                            <th scope="col">實際訂單</th>
+                            <th scope="col">預期訂單</th>
+                            <th scope="col">預期庫存</th>
+                        </thread>
+                        <tbody>
+                            <tr>
+                                <th colspan="1" scope="colgroup"> 商品一號</th>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td>6</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <td></th>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td>6</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <th colspan="1" scope="colgroup"> 商品一號</th>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td>6</td>
+                                <td>6</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-1"></div>
+     
+                <div class="col-md-4">
+                    <table class="table">
+                        <thread>
+                            <th scope="col">商品名稱</th>
+                            <th scope="col">已開發票未出貨數量</th>
+                        </thread>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>  
+            <!-- <div class="pull-right" style="padding-top:30px;">
+                <button type="button" class="btn btn-secondary"> 關閉</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,301 @@
+{% extends 'layout.html' %}
+
+{% block left %}
+{% endblock %}
+{% block content %}
+<script>
+    $(document).ready(function(){
+        $("#add_select").on("click", function(){
+            var $select = $("#select_fe option:selected");
+            var $new_row = $('<div class="form-group col-md-12"></div>');
+            var $new_label = $('<label></label>');   
+            var $new_input = $('<input type="text" class="form-control">');                                                 
+            if($select.val() === "company"){
+                $new_label.attr({for:'company1'}).text("公司");
+                $new_input.attr({id:'company1'});
+            }else if($select.val()==="site"){
+                $new_label.attr({for:'site1'}).text("廠區");
+                $new_input.attr({id:'site1'});
+            }else if($select.val()==="contact_window"){
+                $new_label.attr({for:'contact_window1'}).text("聯絡人");
+                $new_input.attr({id:'contact_window1'});
+            }else if($select.val()==="custom_no"){
+                $new_label.attr({for:'custom_no1'}).text("客戶編號");
+                $new_input.attr({id:'custom_no1'});
+            }else if(!$select.val()){
+                $("#add_select").attr({'disabled':true});
+                return true;
+            };                  
+            $new_row.append($new_label, $new_input);
+            $new_row.insertBefore("#option_div");
+            $("#select_fe option:selected").remove();
+        });
+    });
+    
+    $(".active").removeClass("active");
+    $("#customer_bar").addClass("active");
+</script>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <form  method="post" action="#">
+                 {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="company_number">客戶編號</label>
+                        <input type="text" class="form-control" id="company_number" name="company_number">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="company_name">公司</label>
+                        <input type="text"class="form-control" id="company_name" name="company_name">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="site">廠區</label>
+                        <input type="text" class="form-control" id="site" name="site">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="contactor">聯絡人</label>
+                        <input type="text" class="form-control" id="contactor" name="contactor">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="phone">連絡電話</label>
+                        <input type="text" class="form-control" id="phone" name="phone">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="note">備註</label>
+                        <input type="text" class="form-control" id="note" name="note">
+                    </div>
+                </div>
+                <div id="fade_message" style="text-align:center; display:none;">
+                    <span class="badge badge-primary">
+                        新增成功
+                    </span>
+                </div>
+                <div class="col-md-12">
+                    <div class="btn-toolbar pull-right" role="toolbar" arial-label="twbgs">
+                        <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
+                            <button class="btn btn-secondary" type="submit" id="add_new">
+                                新增
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+    {%if duplicate is True%}
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display: block; padding-top: 30px;" aria-modal="true" aria-labelledby="tile" id="warning_id">
+        <div class="modal-dialog" role="document" style="border-color: #c3e6cb;">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #f8d7da; border-color: #c6c8ca;">
+                    <h5 class="modal-title" style="color:rgb(138, 68, 68)">Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="close_modal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="background-color: #fad2d5; border-color: #c6c8ca; border-width: 5px;">
+                    <p style="font-weight: bolder;font-size: 20px; color:#0c5460;">不能輸入相同客戶編號:<br><br>
+                        <div style="padding-left: 50px; color:#0c5460; font-size: 15px;">
+                            請檢查客戶編號是否重複輸入
+                        </div>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif duplicate is False %}
+        <script>
+            $("#fade_message").show(0).delay(1000).queue(function(){$("#fade_message").hide()});
+            
+        </script>
+    {% endif %}
+</div>
+
+<div class="container" style="margin-top:20px;">
+    <div class="card">
+        <div class="card-body">        
+            <div class="row">
+            <!--    <div class="card col-md-3" style="border-style: hidden; left:0px;">
+                    <div class="card-body">
+                        <div name="option_block" class="text-left col-md-12">
+                            <label for="select_fe" style="font-size: 20px;font-weight: bolder;">查詢欄位</label>
+                            <select  class="form-control" name="select_fe" id="select_fe" style="border:2px solid;margin-bottom: 10px;">
+                                <option value="company">公司</option>        
+                                <option value="site">廠區</option>
+                                <option value="contact_window">聯絡人</option>
+                                <option value="custom_no">客戶編號</option>
+                            </select>
+                            <div id="option_div" style="padding-top:5px;padding-bottom: 30px;">
+                                <button id="add_select" type="button" class="btn-secondary btn pull-right">選擇</button>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="padding-top:30px;">
+                            <button class="btn-secondary btn pull-right">查詢</button>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="col-md-12 container" style='font: 80%/1.45em "Helvetica Neue", HelveticaNeue, Verdana, Arial, Helvetica, sans-serif; margin: 0;padding: 0;color: #333;background-color: #fff;'>
+                    <table class="table col-md-12 table-striped table-bordered nowrap" style="margin-top: 2rem;" id="mytable1"  width="100%">
+                        <thead>
+                            <tr>
+                                <!-- <th scope="col">#</th> -->
+                                <th scope="col">客戶編號</th>
+                                <th scope="col">公司</th>
+                                <th scope="col">廠區</th>
+                                <th scope="col">聯絡人</th>
+                                <th scope="col">連絡電話</th>
+                                <th scope="col">備註</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th scope="col">客戶編號</th>
+                                <th scope="col">公司</th>
+                                <th scope="col">廠區</th>
+                                <th scope="col">聯絡人</th>
+                                <th scope="col">連絡電話</th>
+                                <th scope="col">備註</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for eachform in formset%}
+                            <tr>
+                                {% for key,value in eachform.items %}
+                                    <td  name= 'table_row'>{{value}}</td> 
+                                {% endfor %}
+                                <td> 
+                                    <div class="btn-toolbar pull-right" role="toolbar">
+                                        <div class="btn-group mr-2" role="group"> 
+                                            <button type="button" style="background-color: transparent; border: transparent;" name="delete">&#x274C;</button>
+                                        </div>
+                                        <div class="btn-group mr-2" role="group" style="padding-left:1rem;">
+                                            <button class="btn btn-secondary" type="button" name="edit" >編輯</button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                             {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="col-md-12" style="padding-top:30px;">
+                        <button type="submit" class="btn-secondary btn pull-right" name="updatedb">修改</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" style="display: none; padding-top: 30px;" aria-modal="true" aria-labelledby="tile" id="add_success_id">
+    <div class="modal-dialog" role="document" style="border-color: black; border-width: 2px;">
+        <div class="modal-content">
+            <div class="modal-header" style="background:rgb(203, 203, 236) ; border-color: black;">
+                <h3 class="modal-title">
+                    <span class="badge badge-primary"> Info </span>
+                </h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="close_modal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: #c5dbdf; border-color: #8ba0b6; border-width: 5px;">
+                <p style="font-weight: bolder;font-size: 20px; color:deepskyblue(138, 68, 68);">修改成功<br><br>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form style="display: none;" id="form_to_update"> 
+    {% csrf_token %}
+
+</form>
+
+{% load static %}
+<script defer src="{% static 'select_data/js/third_party/jquery/jquery.dataTables.js' %}"></script> 
+<link href="{% static 'select_data/css/third_party/datatable/dataTables.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+
+<script defer>
+       $(document).ready(function(){
+        var table = $('#mytable1').DataTable({
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "fnDrawCallback": function(){
+                $("[name='delete']").click(function(){
+                this.parentNode.parentNode.parentNode.parentElement.hidden="true";
+                var $a = this.parentNode.parentNode.parentNode.parentNode;
+                $a.setAttribute("name","deleted");
+                })
+
+                $("[name='edit']").click(function(){
+                var $a = this.parentNode.parentNode.parentNode.parentNode;
+                var $b = $("[name='edit']")
+                var $c = $b[0].parentNode.parentNode.parentNode.parentNode;
+                var b = $a.childElementCount-2;
+
+                for(var i=1; i<=b; i++){     
+                    $a.children[i].setAttribute("contenteditable","true");
+                }
+                // console.log("End");
+                $a.setAttribute("name","modified");
+                })
+
+                $("[name='updatedb']").on('click', function(e){
+                    var $modifed = $("[name=modified]");
+                    for( var i=0; i<$modifed.length; i++){
+                        var tmp = $modifed[i];
+                        var $row_data = $("<div class='row'></div>");
+                        var $all_values = $(tmp).find("[name='table_row']");
+                        for(var j=0; j < $all_values.length; j++){
+                            var $each_value = $("<input type='text'>").attr({value:$all_values[j].innerText}).attr({name:'update_row'+i});
+                            $row_data.append($each_value);
+                        }
+                        $("#form_to_update").append($row_data);
+                        tmp.removeAttribute("name");
+                        let b = tmp.childElementCount-2;
+                        for(var i=1; i<=b; i++){
+                            tmp.children[i].removeAttribute("contenteditable");
+                        }
+                    }
+
+                    var $deleted = $("[name=deleted]");
+                    for( var i=0; i<$deleted.length; i++){
+                        var tmp = $deleted[i];
+                        var $row_data = $("<div class='row'></div>");
+                        var $all_values = $(tmp).find("[name='table_row']");
+                        for(var j=0; j < $all_values.length; j++){
+                            var $each_value = $("<input type='text'>").attr({value:$all_values[j].innerText}).attr({name:'delete_row'+i});
+                            $row_data.append($each_value);
+                        }
+                        $("#form_to_update").append($row_data);
+                        $("[name=deleted]").remove();
+                    }
+
+
+                    e.preventDefault();
+            
+                    var form = $("#form_to_update");
+                    $.ajax({
+                            url:"{% url 'select_data:updatecustomer' %}",
+                            type:'POST',
+                            dataType:'json',
+                            data: form.serialize(),
+                            success: $("#add_success_id").attr({"class":"modal fade show"}).attr({"style":"display:block; padding-top:30px;"})
+                            // alert("ok")
+                    });
+                    e.preventDefault();
+                });
+            }
+        });
+    });
+</script>
+
+
+{% endblock %}

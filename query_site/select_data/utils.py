@@ -3,13 +3,36 @@
 import sqlite3
 import os
 import datetime
+
+
+def tojson(select_result, name_list):
+    n = len(select_result)
+    result = []
+    for i in range(n):
+        tmp = {}
+        for k,v in zip(name_list, select_result[i]):
+            tmp[k] = v
+        result.append(tmp)
+    return result
+
+
+def tojsonframe(select_result, name_list, design = None):
+    n = len(select_result)
+    result = {}
+    for i in range(n):
+        tmp = select_result[i]
+        if design is None:
+            result[tmp[0]] = [j for j in tmp[1:]]
+        else:
+            result[tmp[0]] = [j for idx,j in enumerate(tmp[1:]) if idx in design]
+    return result    
+
 def make_connection(base_dir = os.path.dirname(os.getcwd() )):
     # cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
     # print(os.path.join(base_dir,'db.sqlite3'))
     conn = sqlite3.connect(os.path.join(base_dir,'db.sqlite3'))
     return conn
 
-make_connection()
 def utils_insert_single(conn, insert_form, 
         fes = ['company_name', 'product_name'], 
         update_tables = ['select_data_company', 'select_data_product']):

@@ -8,5 +8,13 @@ urlpatterns = [
     path('insert/', views.insert, name = 'insert'),
     path('record/', views.record, name = 'record'),
     path('select/', views.select, name = 'select'),
-    path('expect_order/', views.expect_order, name = 'expect_order')
+    path('expect_order/', views.expect_order, name = 'expect_order'),
+    path('actual_order/', views.actual_order, name = 'actual_order'),
+    path('customer/', views.customer, name = 'customer'),
+    path('product/', views.product, name = 'product'),
+    path('revise_record/', views.revise_record, name = 'revise_record'),
+    path('record_search/', views.record_search, name = 'record_research'),
+    path('updateproduct/', views.updateproduct, name = 'updateproduct'),
+    path('updatecustomer/', views.updatecustomer, name = 'updatecustomer'),
+    path('gettable/', views.gettable, name = 'gettable')
 ]

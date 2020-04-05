@@ -5,6 +5,60 @@ from django.forms import ModelForm
 
 ##### define manager (for display purpose)
 
+
+class ProductManager(models.Manager):
+    def recent_records(self):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT product_number, product_name FROM select_data_product p ORDER BY p.product_number 
+                """
+            )
+            respond = cursor.fetchall()
+        return respond
+
+class CustomerManager(models.Manager):
+    def recent_records(self):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT company_number, company_name, site, contactor, phone, note FROM select_data_customer c ORDER BY c.customer_id
+                """
+            )
+            respond = cursor.fetchall()
+        return respond
+
+class OrderManager(models.Manager):
+    def expect_order_records(self):
+        from django.db import connection
+        [ "customer_id","ask_no","note",'pay_way','charger','ask_date','demand_date', 'deadline']
+        ['product_name','product_amount']
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT customer_id_id, ask_no, pay_way, ask_date, demand_date, deadline, employee_name, od.product_name_id, 
+                product_amount, note, last_modified FROM select_data_order o, select_data_employee e, select_data_order_detail od
+                WHERE o.charger_id_id = e.employee_id AND o.order_all_id = od.order_id_id ORDER BY o.last_modified 
+                """
+            )
+            respond = cursor.fetchall()
+        return respond
+
+
+    def recent_records(self):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT company_number, company_name, site, contactor, phone, note FROM select_data_customer c ORDER BY c.customer_id
+                """
+            )
+            respond = cursor.fetchall()
+        return respond
+
+
 class InsertManager(models.Manager):
     def recent_records(self):
         from django.db import connection
@@ -40,164 +94,131 @@ class StockManager(models.Manager):
 
 
 ##### define table
-# company table
-class Company(models.Model):
-    """
-    record the company name
-    pk: company id
-    """
-    company_id = models.AutoField( primary_key=True)
-    company_name = models.CharField(max_length=50, unique=True)
-    def __str__(self):
-        return "公司:"+self.company_name
-    #time = models.DateField('query time')
 
-# factory table
-class Factory(models.Model):
-    """
-    pk : factory id
-    foreign key: company id
-    """
-    factory_id = models.AutoField(primary_key=True)
-    company_id = models.ForeignKey('Company', on_delete=models.CASCADE) 
-    factory_site = models.CharField(max_length=30)
-    def __str__(self):
-        r = re.sub('公司' , '廠區', str(self.company_id))
-        return  r + '-' + str(self.factory_site)
-
-# people table
-class People(models.Model):
-    """
-    pk: people id
-    foreign key: factory 
-    """
-    people_id = models.AutoField( primary_key=True)
-    factory_id = models.ForeignKey('Factory', on_delete=models.CASCADE)
-    people_name = models.CharField(max_length=30)
-
-    def __str__(self):
-        return re.sub( '廠區', '窗口', str(self.factory_id)) + '-' + self.people_name
 
 # product table
 class Product(models.Model):
     """
-    pk: product id
+    pk: product_name
     """    
-    product_id = models.AutoField( primary_key=True)
-    product_name = models.CharField(max_length=50)
-    product_period = models.IntegerField(null=True, default=0)
+    product_number = models.CharField(max_length=50)
+    product_name = models.CharField(primary_key=True, max_length=50)
+    objects = models.Manager()
+    record = ProductManager()
     def __str__(self):
-        return '產品:'+ self.product_name  + ', 效期為:' + str(self.product_period)
-# stock table
-class Stock(models.Model):
+        return '商品編號:'+ self.product_number  + ', 名稱:' + str(self.product_name)
+
+# company table
+class Customer(models.Model):
     """
-    pk: stock id
-    foreign key: product id
+    record the customer name
+    pk: customer id
     """
-    stock_id = models.AutoField(primary_key=True)
-    product_id = models.ForeignKey('Product', on_delete=models.CASCADE)
-    produced_date = models.DateField()
-    num_rest = models.IntegerField()
-    # now_time = models.DateField('date of today', auto_now=True)    
-    record = StockManager()
+    customer_id = models.AutoField(primary_key=True)
+    company_number = models.CharField(max_length=50)
+    company_name = models.CharField(max_length=50)
+    site = models.CharField(max_length=50)
+    contactor = models.CharField(max_length=50)
+    phone = models.CharField(max_length=50)
+    note = models.CharField(max_length=100, null=True)
+    objects = models.Manager()
+    record = CustomerManager()
     def __str__(self):
-        r = re.sub('效.*', '', str(self.product_id))
-        return  r + ", 庫存個數為:"+str(self.num_rest)
+        return "公司:"+ self.company_name + ", 聯絡人:"+self.contactor
+
+# order source
+class Order_stock(models.Model):
+    """
+    pk: order stock po
+    """
+    product_name = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order_stock_date = models.DateField()
+    order_num = models.IntegerField()
+    order_stock_po = models.CharField(max_length=50, primary_key=True)
+    order_stock_status = models.IntegerField() # 0:下單 1:運送中 2:即將到貨 3:已到達
+    objects = models.Manager()
+    def __str__(self):
+        return "訂貨編號:"+ self.order_stock_po + ", 狀態:"+ str(self.order_stock_status)
+
+# order source detail
+class Order_stock_detail(models.Model):
+    """
+    pk: order stock detail
+    """
+    order_stock_detail_id = models.AutoField(primary_key=True)
+    order_stock_po = models.ForeignKey(Order_stock, on_delete=models.CASCADE)
+    product_name = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product_po = models.CharField(max_length=50)
+    valid_date = models.DateField()
+    product_num = models.IntegerField()
+    note = models.CharField(max_length=50, null=True)
+    order_detail_status = models.BooleanField(default=False)
+    objects = models.Manager()
+    def __str__(self):
+        return "商品批號:" + self.product_po + ", 品名:" + self.product_name + ", 數量" + str(self.product_num) 
 
 # company employee
 class Employee(models.Model):
     """
     pk: empolyee id
     """
-    employee_id = models.AutoField( primary_key=True)
+    employee_id = models.AutoField(primary_key=True)
     employee_name = models.CharField(max_length=50)
     employee_position  = models.CharField(max_length=50)
     employee_state = models.CharField(max_length=10)
     start_time = models.DateField()
+    objects = models.Manager()
     def __str__(self):
         return "員工名稱:"+self.employee_name
-# order table
-class Order_get(models.Model):
-    """
-    pk: order id
-    """
-    order_id = models.AutoField(primary_key=True)
-    #接單日期
-    get_order_date = models.DateField()
-    po_num = models.CharField(max_length=200)
-    finished = models.BooleanField(default=False)
-    def __str__(self):
-        return "訂單編號:" + self.po_num
 
-# order detail table  
+# order b2b
+class Order(models.Model):
+    """
+    record order b2b
+    pk: order_id
+    """
+    order_all_id = models.AutoField(primary_key=True)
+    customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    ask_no = models.CharField(max_length=50)
+    pay_way = models.CharField(max_length=50, null=True)
+    note = models.CharField(max_length=50, null=True)
+    ask_date = models.DateField()
+    demand_date = models.DateField(null=True)
+    deadline = models.DateField(null=True)
+    get_date = models.DateField(null=True)
+    expect_date = models.DateField(null=True)
+    order_no = models.CharField(max_length=50)
+    deliver_way = models.CharField(max_length=50, null=True)
+    note1 = models.CharField(max_length=50, null=True)
+    invoice_condition = models.BooleanField(default=False)
+    actual_ship_date = models.DateField(null=True)
+    finished = models.BooleanField(default=False)
+    charger_id = models.ForeignKey(Employee,null=True, on_delete = models.CASCADE)
+    last_modified = models.DateField(auto_now=True)
+    objects = models.Manager()
+    def __str__(self):
+        return "流水編號:" +  self.order_all_id + ",訂單狀態:"  + "完成" if self.finished else "未完成"
+
 class Order_detail(models.Model):
     """
-    pk: detail id
-    foreign key: order_id, product_id, reponse_id, custom_id
+    detail for order
     """
-    detail_id = models.AutoField(primary_key=True)
-    # foreign key as product_id
-    product_id = models.ForeignKey('Product', on_delete=models.CASCADE)
-    # foreign key as order_id
-    order_id = models.ForeignKey('Order_get', on_delete=models.CASCADE)
-    # foreign key as employee_id
-    response_id = models.ForeignKey('Employee', on_delete=models.CASCADE, null = True)
-    # foreign key as people_id
-    custom_id = models.ForeignKey('People', on_delete=models.CASCADE)
-    product_num = models.IntegerField()
-    product_require_date = models.IntegerField(null=True)
-    other_command = models.CharField(max_length=200, default="No command")
-    expected_ship_date = models.DateField()
-    actual_ship_date = models.DateField(null=True)
-    last_modified = models.DateTimeField(auto_now=True)
-
-    record = InsertManager()
+    order_detail_id = models.AutoField(primary_key=True)
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product_name = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product_amount = models.IntegerField()
+    record = OrderManager()
     def __str__(self):
-        r = re.sub('效.*', '', str(self.product_id))
-        return f"{r}, 產品數量:{self.product_num}"
+        return "流水編號:" + self.order_id + "," + self.product_name + ":" + self.product_amount
 
 ###### define form
-class CompanyForm(ModelForm):
-    class Meta:
-        model = Company
-        fields = ['company_name']
-class FactoryForm(ModelForm):
-    class Meta:
-        model = Factory
-        fields = ['company_id', 'factory_site']
-class PeopleForm(ModelForm):
-    class Meta:
-        model = People
-        fields = ['factory_id', 'people_name']
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        fields = ['product_name', 'product_period']
-class StockForm(ModelForm):
-    class Meta:
-        model = Stock
-        fields = ['product_id', 'produced_date', 'num_rest']
+        fields = ['product_name']
 class EmployeeForm(ModelForm):
     class Meta:
         model = Employee
         fields = ['employee_name', 'employee_position', 'employee_state', 'start_time']
-class Order_getForm(ModelForm):
-    class Meta:
-        model = Order_get
-        fields = ['get_order_date', 'po_num', 'finished']
-
-class Order_detailForm(ModelForm):
-    class Meta:
-        model = Order_detail
-        fields = ['product_id', 'order_id', 'response_id', 'custom_id', 'product_num',
-         'product_require_date', 'other_command', 'expected_ship_date', 'actual_ship_date']
 
 
-# class Migration(migrations.Migration):
-
-#     dependencies = [('migrations', '0001_initial')]
-
-#     operations = [
-#         migrations.DeleteModel('Tribble'),
-#         migrations.AddField('Author', 'rating', models.IntegerField(default=0)),
-#     ]
