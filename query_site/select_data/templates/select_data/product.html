@@ -4,7 +4,7 @@
 {% endblock %}
 {% block content %}
 
-<div class="container">
+
     <div class="card">
         <div class="card-body">
             <form  method="post" class="pull-left col-md-12" action="#"> 
@@ -36,18 +36,8 @@
             </form>
         </div>
     </div>
-</div>
-<script>
-    // $(".active").removeClass("active");
-    // $("#product_bar").addClass("active");
 
-    // function close_modal(){
-    //     $("#warning_id").removeClass("show").removeAttr("style").attr("style","display: none;").attr("aria-hidden","true");
-    // }
-    // function fadeaway(){
-    //     $("#fade_message").fadeOut("fast");
-    // }
-</script>
+
 <div>
     {%if duplicate is True%}
     <div class="modal fade show" tabindex="-1" role="dialog" style="display: block; padding-top: 30px;" aria-modal="true" aria-labelledby="tile" id="warning_id">
@@ -77,9 +67,8 @@
     {% endif %}
 </div>
 
-<div class="container" style="margin-top:20px;">
 
-    <div class="card">
+    <div class="card" style="margin-top:20px;">
         <div class="card-body">        
             <div class="row">
                 <!-- <div class="card col-md-2" style="border-style: hidden; left:0px;"> -->
@@ -94,8 +83,8 @@
                     </div> -->
                 <!-- </div> -->
                 
-                <div class="col-md-12 container" style='font: 90%/1.45em "Helvetica Neue", HelveticaNeue, Verdana, Arial, Helvetica, sans-serif; margin: 0;padding: 0;color: #333;background-color: #fff;'>
-                    <table class="table col-md-12 table-striped table-bordered nowrap" style="margin-top: 2rem;" id="mytable1"  width="100%">
+                <div class="col-md-12 container" style='font: 90%/1.45em "Helvetica Neue", HelveticaNeue, Verdana, Arial, Helvetica, sans-serif; margin: 0;padding: 0;color: #333;background-color: #fff;overflow-x:auto;'>
+                    <table class="table col-md-12 table-striped table-bordered nowrap" style="margin-top: 2rem; border-collapse: collapse;" id="mytable1"  width="100%">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -119,7 +108,6 @@
                                 <td scope="row">{{forloop.counter}}</td>
                                 {% for key,value in eachform.items %}
                                     <td  name= 'table_row'>{{value}}</td> 
-                                    <!-- {{'table_row'|add_string:forloop.counter}} -->
                                 {% endfor %}
                                 <td> 
                                     <div class="btn-toolbar pull-right" role="toolbar">
@@ -143,7 +131,7 @@
             </div>
         </div>
     </div>
-</div>
+
 
 <div class="modal fade" tabindex="-1" role="dialog" style="display: none; padding-top: 30px;" aria-modal="true" aria-labelledby="tile" id="add_success_id">
     <div class="modal-dialog" role="document" style="border-color: black; border-width: 2px;">
@@ -173,7 +161,11 @@
 {% load static %}
 <script defer src="{% static 'select_data/js/third_party/jquery/jquery.dataTables.js' %}"></script> 
 <link href="{% static 'select_data/css/third_party/datatable/dataTables.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
-
+<style>
+    table thead th{
+        background-color: grey;
+    }
+</style>
 <script defer>
        $(document).ready(function(){
         var table = $('#mytable1').DataTable({
@@ -183,42 +175,42 @@
                 $("#product_bar").addClass("active");
                 $("[name='delete']").click(function(){
                 this.parentNode.parentNode.parentNode.parentElement.hidden="true";
-                var $a = this.parentNode.parentNode.parentNode.parentNode;
-                $a.setAttribute("name","deleted");
+                var a = this.parentNode.parentNode.parentNode.parentNode;
+                a.setAttribute("name","deleted");
                 })
 
                 $("[name='edit']").click(function(){
-                    var $a = this.parentNode.parentNode.parentNode.parentNode;
-                    var $b = $a.children[2];
-                    $a.setAttribute("name","modified");
-                    $b.setAttribute("contenteditable","true");
+                    var a = this.parentNode.parentNode.parentNode.parentNode;
+                    var b = a.children[2];
+                    a.setAttribute("name","modified");
+                    $(b).attr({"contenteditable":"true","style":"border-width:3px; border_color:#FFAC55; border-style:ridge;"});
                 })
 
                 $("[name='updatedb']").on('click', function(e){
-                    var $modifed = $("[name=modified]");
-                    for( var i=0; i<$modifed.length; i++){
-                    var tmp = $modifed[i];
-                    var $row_data = $("<div class='row'></div>");
-                    var $all_values = $(tmp).find("[name='table_row']");
-                    for(var j=0; j < $all_values.length; j++){
-                        var $each_value = $("<input type='text'>").attr({value:$all_values[j].innerText}).attr({name:'update_row'+i});
-                        $row_data.append($each_value);
+                    var modifed = $("[name=modified]");
+                    for( var i=0; i<modifed.length; i++){
+                    var tmp = modifed[i];
+                    var row_data = $("<div class='row'></div>");
+                    var all_values = $(tmp).find("[name='table_row']");
+                    for(var j=0; j < all_values.length; j++){
+                        var each_value = $("<input type='text'>").attr({value:all_values[j].innerText}).attr({name:'update_row'+i});
+                        row_data.append(each_value);
                     }
-                    $("#form_to_update").append($row_data);
+                    $("#form_to_update").append(row_data);
                     tmp.removeAttribute("name");
-                    tmp.children[2].removeAttribute("contenteditable");
+                    $(tmp.children[2]).removeAttr("contenteditable style");
                     }
 
-                    var $deleted = $("[name=deleted]");
-                    for( var i=0; i<$deleted.length; i++){
-                    var tmp = $deleted[i];
-                    var $row_data = $("<div class='row'></div>");
-                    var $all_values = $(tmp).find("[name='table_row']");
+                    var deleted = $("[name=deleted]");
+                    for( var i=0; i<deleted.length; i++){
+                    var tmp = deleted[i];
+                    var row_data = $("<div class='row'></div>");
+                    var all_values = $(tmp).find("[name='table_row']");
                     for(var j=0; j < $all_values.length; j++){
-                        var $each_value = $("<input type='text'>").attr({value:$all_values[j].innerText}).attr({name:'delete_row'+i});
-                        $row_data.append($each_value);
+                        var each_value = $("<input type='text'>").attr({value:$all_values[j].innerText}).attr({name:'delete_row'+i});
+                        row_data.append($each_value);
                     }
-                    $("#form_to_update").append($row_data);
+                    $("#form_to_update").append(row_data);
                     $("[name=deleted]").remove();
                     }
 
@@ -234,6 +226,8 @@
                             success: $("#add_success_id").attr({"class":"modal fade show"}).attr({"style":"display:block; padding-top:30px;"})
                             });
                     e.preventDefault();
+                    // $.each($("[contenteditable='true']"), function(){$(this).removeAttri("contenteditable style")});
+
                 });
             }
         });
@@ -241,9 +235,9 @@
 
 
 
-    function close_modal(){
-        $(".show").removeClass("show").removeAttr("style").attr("style","display: none;").attr("aria-hidden","true");
-    }
+    // function close_modal(){
+    //     $(".show").removeClass("show").removeAttr("style").attr("style","display: none;").attr("aria-hidden","true");
+    // }
 
 
 </script>

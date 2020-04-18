@@ -16,5 +16,8 @@ urlpatterns = [
     path('record_search/', views.record_search, name = 'record_research'),
     path('updateproduct/', views.updateproduct, name = 'updateproduct'),
     path('updatecustomer/', views.updatecustomer, name = 'updatecustomer'),
-    path('gettable/', views.gettable, name = 'gettable')
+    path('gettable/', views.gettable, name = 'gettable'),
+    path('update_actual_order/', views.update_actual_order, name = 'update_actual_order'),
+    path('update_stock_order/', views.update_stock_order, name = 'update_stock_order'),
+    path('update_stock_order_detail/', views.update_stock_order_detail, name = 'update_stock_order_detail')
 ]

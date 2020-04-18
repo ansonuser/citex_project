@@ -11,20 +11,42 @@ def tojson(select_result, name_list):
     for i in range(n):
         tmp = {}
         for k,v in zip(name_list, select_result[i]):
+            if isinstance(v,datetime.date) or isinstance(v,datetime.datetime):
+                v = v.strftime("%Y/%m/%d")
+            elif v is None:
+                v = ""
             tmp[k] = v
         result.append(tmp)
     return result
 
 
-def tojsonframe(select_result, name_list, design = None):
+def tojsonframe(select_result,  design = None, keys = None):
     n = len(select_result)
     result = {}
     for i in range(n):
         tmp = select_result[i]
-        if design is None:
-            result[tmp[0]] = [j for j in tmp[1:]]
+        if design is None and keys is None:
+            value_list = []
+            for j in tmp[1:]:
+                if (isinstance(j,datetime.date) or isinstance(j,datetime.datetime)):
+                    value_list.append(j.strftime("%Y/%m/%d"))
+                elif j is None:
+                    value_list.append("")
+                else:
+                    value_list.append(j)
+            result[tmp[0]] = value_list
+        elif keys is not None:
+            value_list = []
+            for j in tmp:
+                if (isinstance(j,datetime.date) or isinstance(j,datetime.datetime)):
+                    value_list.append(j.strftime("%Y/%m/%d"))
+                elif j is None:
+                    value_list.append("")
+                else:
+                    value_list.append(j)
+            result[i] = value_list
         else:
-            result[tmp[0]] = [j for idx,j in enumerate(tmp[1:]) if idx in design]
+            result[tmp[0]] = [j if not  (isinstance(j,datetime.date) or isinstance(j,datetime.datetime)) else j.strftime("%Y/%m/%d") for idx,j in enumerate(tmp[1:]) if idx in design]
     return result    
 
 def make_connection(base_dir = os.path.dirname(os.getcwd() )):

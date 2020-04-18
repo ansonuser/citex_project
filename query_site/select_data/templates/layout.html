@@ -8,19 +8,25 @@
         <link rel="stylesheet" type="text/css" href="{% static 'select_data/css/mycss/style.css' %}">
         <link rel="stylesheet" href="{% static 'select_data/css/third_party/datatable/datatables.css' %}">
         <link rel="stylesheet"  href="{% static 'select_data/css/third_party/datatable/datatables.min.css' %}">
+        <link rel="stylesheet"  href="{% static 'select_data/css/third_party/jquery/jquery-ui.css' %}">
         <link rel="icon" HREF="{% static  'select_data/images/favicon.ico' %}"/>
-        
-        <script src="{% static 'select_data/js/third_party/jquery/jquery.min.js' %}"></script>
+
+
+        <script type="text/javascript" src="{% static 'select_data/js/third_party/jquery/jquery.min.js' %}"></script>
+
         <!-- <script src="{% static 'select_data/js/third_party/bootstrap/jquery-3.4.1.slim.min.js' %}"></script> -->
       
 
-        <script src="{% static 'select_data/js/third_party/bootstrap/jquery-3.4.1.min.js' %}"></script>
-        <script src="{% static 'select_data/js/third_party/bootstrap/popper.js' %}"></script>
-        <script src="{% static 'select_data/js/third_party/bootstrap/bootstrap.bundle.min.js' %}"></script>
-        <script src="{% static 'select_data/js/third_party/bootstrap/bootstrap.min.js' %}"></script>
-        <script src="{% static 'select_data/js/myjs/myjs.js' %}"></script>
+        <script type="text/javascript" src="{% static 'select_data/js/third_party/bootstrap/jquery-3.4.1.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'select_data/js/third_party/bootstrap/popper.js' %}"></script>
+        <script type="text/javascript" src="{% static 'select_data/js/third_party/bootstrap/bootstrap.bundle.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'select_data/js/third_party/bootstrap/bootstrap.min.js' %}"></script>
+        
         <!-- <script src="{% static 'select_data/js/third_party/datatable/datatables.js' %}"></script> -->
-        <script src="{% static 'select_data/js/third_party/datatable/datatables.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'select_data/js/third_party/datatable/datatables.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'select_data/js/third_party/jquery/jquery-ui.js' %}"></script>
+        <script type="text/javascript" src="{% static 'select_data/js/third_party/jquery/jquery-ui.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'select_data/js/myjs/myjs.js' %}"></script>
         <link rel="stylesheet" type="text/css" href="{% static 'select_data/css/third_party/bootstrap/bootstrap.min.css' %}">
         <title>Test</title>
     </head>
@@ -53,8 +59,8 @@
                                 庫存
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownstock">
-                                <a href="{% url 'select_data:record' %}" class="dropdown-item">新增庫存</a>
-                                <a href="{% url 'select_data:revise_record' %}" class="dropdown-item">庫存修改</a>
+                                <a href="{% url 'select_data:record' %}" class="dropdown-item">庫存訂單</a>
+                                <a href="{% url 'select_data:revise_record' %}" class="dropdown-item">庫存訂單明細</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{% url 'select_data:record_research' %}">
                                     庫存查詢
@@ -87,8 +93,10 @@
                     {% endblock %}
                   </div>
                   <div class="col-8">
-                    {% block content %}
-                    {% endblock %}
+                      <div class="container">
+                        {% block content %}
+                        {% endblock %}
+                      </div>
                   </div>
                   <div class="col-2"></div>
               </div> 

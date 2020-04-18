@@ -35,10 +35,9 @@
     $(".active").removeClass("active");
     $("#customer_bar").addClass("active");
 </script>
-<div class="container">
     <div class="card">
         <div class="card-body">
-            <form  method="post" action="#">
+            <form  method="post" class="pull-left col-md-12" action="#">
                  {% csrf_token %}
                 <div class="form-row">
                     <div class="form-group col-md-3">
@@ -86,7 +85,6 @@
             </form>
         </div>
     </div>
-</div>
 
 <div>
     {%if duplicate is True%}
@@ -117,32 +115,12 @@
     {% endif %}
 </div>
 
-<div class="container" style="margin-top:20px;">
-    <div class="card">
+
+    <div class="card" style="margin-top:20px;">
         <div class="card-body">        
             <div class="row">
-            <!--    <div class="card col-md-3" style="border-style: hidden; left:0px;">
-                    <div class="card-body">
-                        <div name="option_block" class="text-left col-md-12">
-                            <label for="select_fe" style="font-size: 20px;font-weight: bolder;">查詢欄位</label>
-                            <select  class="form-control" name="select_fe" id="select_fe" style="border:2px solid;margin-bottom: 10px;">
-                                <option value="company">公司</option>        
-                                <option value="site">廠區</option>
-                                <option value="contact_window">聯絡人</option>
-                                <option value="custom_no">客戶編號</option>
-                            </select>
-                            <div id="option_div" style="padding-top:5px;padding-bottom: 30px;">
-                                <button id="add_select" type="button" class="btn-secondary btn pull-right">選擇</button>
-                            </div>
-                        </div>
-                        <div class="col-md-12" style="padding-top:30px;">
-                            <button class="btn-secondary btn pull-right">查詢</button>
-                        </div>
-                    </div>
-                </div> -->
-
-                <div class="col-md-12 container" style='font: 80%/1.45em "Helvetica Neue", HelveticaNeue, Verdana, Arial, Helvetica, sans-serif; margin: 0;padding: 0;color: #333;background-color: #fff;'>
-                    <table class="table col-md-12 table-striped table-bordered nowrap" style="margin-top: 2rem;" id="mytable1"  width="100%">
+                <div class="col-md-12 container" style='font: 80%/1.45em "Helvetica Neue", HelveticaNeue, Verdana, Arial, Helvetica, sans-serif; margin: 0;padding: 0;color: #333;background-color: #fff;overflow-x:auto;'>
+                    <table class="table col-md-12 table-striped table-bordered nowrap" style="margin-top: 2rem;  border-collapse: collapse;" id="mytable1"  width="100%">
                         <thead>
                             <tr>
                                 <!-- <th scope="col">#</th> -->
@@ -193,7 +171,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <div class="modal fade" tabindex="-1" role="dialog" style="display: none; padding-top: 30px;" aria-modal="true" aria-labelledby="tile" id="add_success_id">
     <div class="modal-dialog" role="document" style="border-color: black; border-width: 2px;">
@@ -222,7 +199,11 @@
 {% load static %}
 <script defer src="{% static 'select_data/js/third_party/jquery/jquery.dataTables.js' %}"></script> 
 <link href="{% static 'select_data/css/third_party/datatable/dataTables.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
-
+<style>
+    table thead th{
+        background-color: grey;
+    }
+</style>
 <script defer>
        $(document).ready(function(){
         var table = $('#mytable1').DataTable({
@@ -230,51 +211,51 @@
             "fnDrawCallback": function(){
                 $("[name='delete']").click(function(){
                 this.parentNode.parentNode.parentNode.parentElement.hidden="true";
-                var $a = this.parentNode.parentNode.parentNode.parentNode;
-                $a.setAttribute("name","deleted");
+                var a = this.parentNode.parentNode.parentNode.parentNode;
+                a.setAttribute("name","deleted");
                 })
 
                 $("[name='edit']").click(function(){
-                var $a = this.parentNode.parentNode.parentNode.parentNode;
-                var $b = $("[name='edit']")
-                var $c = $b[0].parentNode.parentNode.parentNode.parentNode;
-                var b = $a.childElementCount-2;
+                var a = this.parentNode.parentNode.parentNode.parentNode;
+                var b = $("[name='edit']")
+                var c = b[0].parentNode.parentNode.parentNode.parentNode;
+                var b = a.childElementCount-2;
 
                 for(var i=1; i<=b; i++){     
-                    $a.children[i].setAttribute("contenteditable","true");
+                    $(a.children[i]).attr({"contenteditable":"true","style":"border-width:3px; border_color:#FFAC55; border-style:ridge;"});;
                 }
                 // console.log("End");
-                $a.setAttribute("name","modified");
+                a.setAttribute("name","modified");
                 })
 
                 $("[name='updatedb']").on('click', function(e){
-                    var $modifed = $("[name=modified]");
-                    for( var i=0; i<$modifed.length; i++){
-                        var tmp = $modifed[i];
-                        var $row_data = $("<div class='row'></div>");
-                        var $all_values = $(tmp).find("[name='table_row']");
-                        for(var j=0; j < $all_values.length; j++){
-                            var $each_value = $("<input type='text'>").attr({value:$all_values[j].innerText}).attr({name:'update_row'+i});
-                            $row_data.append($each_value);
+                    var modifed = $("[name=modified]");
+                    for( var i=0; i<modifed.length; i++){
+                        var tmp = modifed[i];
+                        var row_data = $("<div class='row'></div>");
+                        var all_values = $(tmp).find("[name='table_row']");
+                        for(var j=0; j < all_values.length; j++){
+                            var each_value = $("<input type='text'>").attr({value:all_values[j].innerText}).attr({name:'update_row'+i});
+                            row_data.append(each_value);
                         }
-                        $("#form_to_update").append($row_data);
+                        $("#form_to_update").append(row_data);
                         tmp.removeAttribute("name");
                         let b = tmp.childElementCount-2;
                         for(var i=1; i<=b; i++){
-                            tmp.children[i].removeAttribute("contenteditable");
+                            $(tmp.children[i]).removeAttr("contenteditable style");
                         }
                     }
 
-                    var $deleted = $("[name=deleted]");
+                    var deleted = $("[name=deleted]");
                     for( var i=0; i<$deleted.length; i++){
-                        var tmp = $deleted[i];
-                        var $row_data = $("<div class='row'></div>");
-                        var $all_values = $(tmp).find("[name='table_row']");
-                        for(var j=0; j < $all_values.length; j++){
-                            var $each_value = $("<input type='text'>").attr({value:$all_values[j].innerText}).attr({name:'delete_row'+i});
-                            $row_data.append($each_value);
+                        var tmp = deleted[i];
+                        var row_data = $("<div class='row'></div>");
+                        var all_values = $(tmp).find("[name='table_row']");
+                        for(var j=0; j < all_values.length; j++){
+                            var each_value = $("<input type='text'>").attr({value:all_values[j].innerText}).attr({name:'delete_row'+i});
+                            row_data.append(each_value);
                         }
-                        $("#form_to_update").append($row_data);
+                        $("#form_to_update").append(row_data);
                         $("[name=deleted]").remove();
                     }
 
