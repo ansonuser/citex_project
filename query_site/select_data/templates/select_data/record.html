@@ -12,24 +12,24 @@
                 <div class="form-row ">
                     <div class="form-group col-md-4">
                         <label for="order_stock_po" >庫存訂單編號</label>
-                        <input type="text" class="form-control" id="order_stock_po" name="order_stock_po">
+                        <input type="text" class="form-control" name="order_stock_po" required='required'>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="order_stock_date" >庫存訂貨日期:</label>
-                        <input type="date" id="order_stock_date" name="order_stock_date" class="form-control">
+                        <label for="order_stock_date" >庫存訂貨日期</label>
+                        <input type="date" name="order_stock_date" class="form-control" required='required'>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="note">備註</label>
-                        <input type="text" class="form-control" id="note" name="note">
+                        <input type="text" class="form-control" name="note">
                     </div>
                 </div> 
 
-                <div id="product_form">
-                    <div class="form-row">
+                <div name="product_form">
+                    <div class="form-row" name="growth_row">
                         <div class="form-group col-md-4">
                             <label for="product_number_id">商品編號</label>
-                            <input type="text" name="product_number_id" list="product_number_id0" class="form-control" onclick="addcolumn_product()">
-                            <datalist id="product_number_id0"></datalist>
+                            <input type="text" name="product_number_id" list="product_number_id" class="form-control" onclick="addcolumn_product(0)">
+                            <datalist id="product_number_id"></datalist>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="product_name">商品名稱</label>
@@ -37,7 +37,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="order_num0">訂貨數量</label>
-                            <input type="number" class="form-control" min="1" name="order_num" id="order_num0" >
+                            <input type="number" class="form-control" min="1" name="order_num">
                         </div>
                     </div>    
                 </div>
@@ -52,9 +52,6 @@
                 <div class="col-sm-12 col-xs-12">
                     <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem;">
-                            <button type="submit" class="btn btn-secondary" >修改</button>
-                        </div>
-                        <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem;">
                             <button type="button" class="btn btn-secondary" onclick="update_stock_order()">新增</button>
                         </div>
                     </div>
@@ -63,70 +60,94 @@
         </div>
     </div>
 
-<div class="card" style="margin-top:3rem;">
-    <div class="card-body">
-
-    </div>
-</div>
-<!-- <div class="container" style="padding-top:3em;">
-    <div class="card-fuild">
-        <div class="card-body-table" >
-            <h5 class="center" style="color:black">紀錄</h５>
+    <div class="card" style="margin-top:3rem;">
+        <div class="card-header" style="background-color:white;">
+            <h2> <span class="badge badge-secondary">歷史紀錄</span></h2>
         </div>
-        <table class="table">
-            <thread>
-                <th scope="col">#</th>
-                <th scope="col">產品</th>
-                <th scope="col">有效期限</th>
-                <th scope="col">庫存量</th>
-                <th scope="col">已生產天數</th>
-            </thread>
-            <tbody>
-                {% for eachform in formset%}
-                    <tr>
-                        <th scope="row">{{forloop.counter}}</th>
-                        {% for value in eachform %}
-                            <td>{{value}}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="card-body">
+            <div class="row" style="text-align: center; margin-bottom: .5rem;">
+                <label style="float:right; margin-bottom: .5rem;vertical-align: middle;">
+                    修改時間為
+                    <select name="select_time_limit">
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                        <option value="90">90</option>
+                        <option value="180">180</option>
+                        <option value="All"> All</option>
+                    </select>
+                    天內
+                </label>
+            </div>
+            <div class='col-md-12'>
+                <div class="row table-wrapper-scroll-y my-custom-scrollbar" style="margin-top: 2rem;">
+                    <table class="table table-bordered table-striped mb-0" style="border-collapse: collapse;" id='stock_record'>
+                        <thead class='thead-dark'>
+                            <tr>
+                                <th scope="col" v-for='col in columns'>
+                                    [[col]]
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for='row in tableData'>
+                                <td v-for='element in row'>
+                                    [[element]]
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>        
+                </div>
+            </div>
+        </div>
     </div>
-</div> -->
+
 <script>
-     function addcolumn_product(){
-      
-      var current_id = document.getElementsByName("product_number_id").length;
-      var new_row = $('<div class="form-group col-md-4"></div>');
-      var new_label = $('<label >商品編號</label>').attr({for:'product_number_id'+current_id}); 
-      var new_input = $('<input type="text" name="product_number_id" class="form-control"'+ "list=product_number_id"+current_id+'>').attr({onclick:"addcolumn_product()"});
-      $(new_input).on("input", product_tree);
-      var select_option = $("#product_number_id0")[0].innerHTML;
-      var data_list = document.createElement("datalist");
-      new_row.append(new_label, new_input, $(data_list).attr({"id":"product_number_id"+current_id}).html(select_option));
+    var table_vue = new Vue({
+        delimiters: ['[[', ']]'],
+        el:"#stock_record",
+        data:{
+            columns : ['庫存訂單編號','庫存訂貨日期','備註','商品名稱','訂貨數量'],
+            tableData : [],
+        }
+        })
 
-      var new_row1 = $('<div class="form-group col-md-4"></div>');
-      var new_label1 = $('<label >商品名稱</label>').attr({for:'product_name'+current_id});
-      var new_input1 = $('<input type="text" disabled="disabled" class="form-control">').attr({id:'product_name'+current_id});
-      new_row1.append(new_label1, new_input1);
-
-      var new_row2 = $('<div class="form-group col-md-4"></div>')
-      var new_label2 = $('<label >訂貨數量</label>').attr({for:'order_num'+current_id});
-      var new_input2 = $('<input type="number" name="order_num" class="form-control" min="1" >').attr({id:'order_num'+current_id});
-      new_row2.append(new_label2, new_input2);
-
-
-      $("#product_form").append($('<div class="form-row"></div>').append(new_row, new_row1, new_row2));
-      $("input[list=product_number_id"+(current_id-1)+ "]").removeAttr("onclick");
-  }
-
-  function product_tree(e){
+    
+    function renewtable(){
+        var time_input = $('select[name="select_time_limit"]').val();
+        $.ajax({
+            url:"{% url 'select_data:gettable'%}",
+            data:{'data':'renew_stock_record',
+                  'limit': time_input},
+            type:'POST',
+            success:function(x){
+                table_vue.tableData = x['form'];
+            }
+        })
+    }
+    function product_tree(e){
         product_tree_url(e, "{% url 'select_data:gettable'%}")
 }
-
+    function check_for_stock_po(){
+        var result = true;
+        var order_stock_po = $("[name='order_stock_po']");
+        $.ajax({
+            url:"{% url 'select_data:gettable'%}",
+            data:{'data':'order_stock_po'},
+            type:"POST",
+            async:false,
+            success:function(x){
+                for(var k in x){
+                    if(k == order_stock_po){
+                        result = false;
+                        break
+                    }
+                }
+            }
+        })
+        return result;
+    }
     function update_stock_order(){
-        if(check_submit){
+        if(required_all()&check_submit()&check_for_stock_po()){
             var form = $("#stock_form");
             $.ajax({
                 url:"{% url 'select_data:update_stock_order'%}",
@@ -145,6 +166,30 @@
                 }
             })
         }else{
+            console.log('in');
+            // var message = warning_info_function('Warning','請確認輸入是否正確或庫存訂單編號是否重複輸入', '"badge badge-warning"');
+            var message = $('<div class="modal fade" role="dialog" aria-labelledby="tile" aria-hidden="true" tabindex="-1" id="check">'+
+                '<div class="modal-dialog modal-xl" role="document">'+
+                    '<div class="modal-content">'+
+                        '<div class="modal-header">'+
+                            '<h5 class="modal-title"  id="title">訂單查詢</h5>'+
+                            '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                                '<span aria-hidden="true">&times;</span>'+
+                                '</button>'+
+                        '</div>' +
+                        '<div class="modal-body">'+
+                         
+                        '</div>' +
+            
+                        '<div class="modal-footer">'+
+                            '<button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>')
+            // console.log(message)
+            $("#warning-info").append(message);
+            $("#check").modal('show');
             return false;
         }      
     }
@@ -152,19 +197,11 @@
     $(document).ready(function(){
         $(".active").removeClass("active");
         $("#stock_bar").addClass("active");
-        $("input[list='product_number_id0']").on("input", product_tree);    
-        
-        $.ajax({
-                url : "{% url 'select_data:gettable'%}",
-                type:"POST",
-                data: {'data':"product"},
-                success:function(result){
-                    for(var key in result){
-                        $("#product_number_id0").append($("<option></option>").attr({"value":key}));
-                    }                     
-                }
-            })
-
+        $('select[name="select_time_limit"]').change(renewtable);
+        $("a[href='/select_data/record/']").addClass("active");
+        renewtable();
+        producting( "{% url 'select_data:gettable'%}");
+        $("input[list='product_number_id']").on("input", product_tree);    
     })
 </script>
 {% endblock %}

@@ -18,43 +18,39 @@
 <div class="card">
     <div class="card-body">
         <form method="post" class="pull-left col-md-12" id="stock_detail_form">{%csrf_token%}
-            <div id="product_form">
-                <div class="form-row">
+            <div name="product_form">
+                <div class="form-row" name='growth_row'>
                     <div class="form-group col-md-2">
-                        <label for="product_number_id">商品編號:</label>
-                        <input type="text" class="form-control" list="product_number_id0" name="product_number_id" disabled="disabled" onclick="addcolumn_product()">
-                        
-                        <datalist id="product_number_id0">
-                            <option value=""></option>
+                        <label for="product_number_id">商品編號</label>
+                        <input type="text" class="form-control" list="product_number_id" name="product_number_id" disabled="disabled" onclick="addcolumn_product(0)">
+                        <datalist id="product_number_id">
+                            <!-- <option value=""></option> -->
                         </datalist>
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="product_name0">商品名稱:</label>
+                        <label for="product_name0">商品名稱</label>
                         <input type="text" class="form-control" id="product_name0" disabled="disabled" required="required">
                     </div> 
                     <div class="form-group col-md-2">
-                        <label for="product_po0">商品批號:</label>
+                        <label for="product_po0">商品批號</label>
                         <input type="text" class="form-control" id="product_po0" name="product_po" disabled="disabled">
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="valid_date0">有效日期:</label>
+                        <label for="valid_date0">有效日期</label>
                         <input type="date" class="form-control" id="valid_date0" name="valid_date" disabled="disabled">
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="product_num" >訂貨數量:</label>
+                        <label for="product_num" >訂貨數量</label>
                         <input type="number" id="product_num0" name="product_num" class="form-control" disabled="disabled" value="1" min="1">
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="note0">備註:</label>
+                        <label for="note0">備註</label>
                         <input type="text" class="form-control" name="note" id="note0" disabled="disabled" />
                     </div>   
                 </div>
             </div>
             <div class="col-sm-12 col-xs-12">
                 <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
-                    <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem;">
-                        <button type="button" class="btn btn-secondary">修改</button>
-                    </div>
                     <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem;">
                         <button id="submit_form" type="button" class="btn btn-secondary"  onclick="update_stock_order_detail()">新增</button>
                     </div>
@@ -66,55 +62,72 @@
 
            
 
-
 <div class="card" style="margin-top:3rem;">
-    <div class="card-fuild">
-        <div class="card-body-table" >
-            <h5 class="center" style="color:black">紀錄</h５>
+    <div class="card-header" style="background-color:white;">
+        <h2> <span class="badge badge-secondary">歷史紀錄</span></h2>
+    </div>
+    <div class="card-body">
+        <div class="row" style="text-align: center; margin-bottom: .5rem;">
+            <label style="float:right; margin-bottom: .5rem;vertical-align: middle;">
+                修改時間為
+                <select name="select_time_limit">
+                    <option value="30">30</option>
+                    <option value="60">60</option>
+                    <option value="90">90</option>
+                    <option value="180">180</option>
+                    <option value="All"> All</option>
+                </select>
+                天內
+            </label>
         </div>
-        <table class="table">
-            <thread>
-                <th scope="col">#</th>
-                <th scope="col">產品</th>
-                <th scope="col">有效期限</th>
-                <th scope="col">庫存量</th>
-                <th scope="col">已生產天數</th>
-            </thread>
-            <tbody>
-                {% for eachform in formset%}
-                    <tr>
-                        <th scope="row">{{forloop.counter}}</th>
-                        {% for value in eachform %}
-                            <td>{{value}}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class='col-md-12'>
+            <div class="row table-wrapper-scroll-y my-custom-scrollbar" style="margin-top: 2rem;">
+                <table class="table table-bordered table-striped mb-0" style="border-collapse: collapse;" id='stock_detail_record'>
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" v-for='col in columns'>
+                                [[col]]
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for='row in tableData'>
+                            <td v-for='element in row'>
+                                [[element]]
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" style="display: none; padding-top: 30px;" aria-modal="true" aria-labelledby="tile" id="add_success_id">
-    <div class="modal-dialog" role="document" style="border-color: black; border-width: 2px;">
-        <div class="modal-content">
-            <div class="modal-header" style="background:rgb(203, 203, 236) ; border-color: black;">
-                <h3 class="modal-title">
-                    <span class="badge badge-primary"> Info </span>
-                </h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="close_modal()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="background-color: #c5dbdf; border-color: #8ba0b6; border-width: 5px;">
-                <p style="font-weight: bolder;font-size: 20px; color:deepskyblue(138, 68, 68);">修改成功<br><br>
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script>
 
+    var table_vue = new Vue({
+        delimiters: ['[[', ']]'],
+        el:"#stock_detail_record",
+        data:{
+            columns : ['庫存訂單編號','庫存訂貨日期','備註','商品名稱','商品數量','商品批號','有效日期'],
+            tableData : [],
+        }
+    })
+        
+    function renewtable(){
+        var time_input = $('select[name="select_time_limit"]').val();
+        $.ajax({
+            url:"{% url 'select_data:gettable'%}",
+            data:{'data':'renew_stock_record_detail',
+                  'limit': time_input},
+            type:'POST',
+            success:function(x){
+                table_vue.tableData = x['form'];
+            }
+        })
+    }
 
     var record = [];
     $(document).ready( function(){
@@ -131,8 +144,10 @@
                 }      
             }
         })
+        renewtable();
         $(".active").removeClass("active");
         $("#stock_bar").addClass("active");
+        $("a[href='/select_data/revise_record/']").addClass("active");
         $("input[list='order_stock_po_option']" ).autocomplete({
             source: record
         });
@@ -144,7 +159,7 @@
             if (this == val){
                 $.each($("input[disabled='disabled']"), function(){$(this).removeAttr("disabled")});
                 $.each($("input[id='product_name0']"), function(){$(this).attr("disabled","disabled")});
-                $("input[list='product_number_id0']").on("input", product_tree);   
+                $("input[list='product_number_id']").on("input", product_tree);   
                 $.ajax({
                         url : "{% url 'select_data:gettable'%}",
                         type:"POST",
@@ -152,7 +167,7 @@
                                'order_stock_po':val},
                         success:function(result){
                             for(var key in result){
-                                $("#product_number_id0").append($("<option></option>").attr({"value":key}));
+                                $("#product_number_id").append($("<option></option>").attr({"value":key}));
                             }                     
                     }
                 })
@@ -162,37 +177,15 @@
     function product_tree(e){
         var a = e.target.value;
         var b = e.target; 
-        $("#product_number_id0").find("option").filter(function(){
-                                                                if((a==this.value)& a != ''){
-                                                                    $.ajax({
-                                                                    url:"{% url 'select_data:gettable'%}",
-                                                                    type: "POST",
-                                                                    data:{
-                                                                        "data": "product_content", 
-                                                                        "val":a
-                                                                        },
-                                                                    success: function(result){
-                                                                            for(var key in result){
-                                                                                b = b.parentNode.nextElementSibling.lastElementChild;
-                                                                                var input_text = result[key];
-                                                                                $(b).attr({"value":input_text})
-                                                                            }
-                                                                        }
-                                                                    })
-                                                                 }else{
-                                                                    var c = e.target.parentNode.parentNode;
-                                                                    $.each($(c).find("input[disabled='disabled']"), function(){$(this).removeAttr("value")})
-                                                                }
-                                                            })
+        product_tree_url(e, "{% url 'select_data:gettable'%}")
         if (a != ""){
             $(b.parentNode.nextElementSibling.lastElementChild).attr({"required":"required"})
         }else{
             $(b.parentNode.nextElementSibling.lastElementChild).removeAttr("required")
         }
     }
+
     function update_stock_order_detail(){
-        // console.log($("#stock_detail_form").length);
-        // console.log($("#stock_detail_form").serialize());
         var a = $("input[required='required']");
         for(var i=0;i<a.length;i++){
             if (a[i].value==''){
@@ -200,9 +193,6 @@
                 return false;
             }
         }
-
-
-
         var form = $("#stock_detail_form").serialize() + "&order_stock_po=" + $("[list='order_stock_po_option']").val();
         $.ajax({
             url:'{% url "select_data:update_stock_order_detail"%}',
@@ -216,49 +206,6 @@
             }
         })
     }
-
-    function addcolumn_product(){
-      
-      var current_id = document.getElementsByName("product_number_id").length;
-      var new_row = $('<div class="form-group col-md-2"></div>');
-      var new_label = $('<label >商品編號</label>').attr({for:'product_number_id'+current_id}); 
-      var new_input = $('<input type="text" name="product_number_id" class="form-control"'+ "list=product_number_id"+current_id+'>').attr({onclick:"addcolumn_product()"});
-      $(new_input).on("input", product_tree);
-      var select_option = $("#product_number_id0")[0].innerHTML;
-      var data_list = document.createElement("datalist");
-      new_row.append(new_label, new_input, $(data_list).attr({"id":"product_number_id"+current_id}).html(select_option));
-
-      var new_row1 = $('<div class="form-group col-md-2"></div>');
-      var new_label = $('<label >商品名稱:</label>').attr({for:'product_name'+current_id});
-      var new_input = $('<input type="text" disabled="disabled" class="form-control">').attr({id:'product_name'+current_id});
-      new_row1.append(new_label, new_input);
-
-      var new_row2 = $('<div class="form-group col-md-2"></div>');
-      var new_label = $('<label >商品批號:</label>').attr({for:'product_po'+current_id});
-      var new_input = $('<input type="text" name="product_po" class="form-control">').attr({id:'product_po'+current_id});
-      new_row2.append(new_label, new_input);
-
-      var new_row3 = $('<div class="form-group col-md-2"></div>');
-      var new_label = $('<label >有效日期:</label>').attr({for:'valid_date'+current_id});
-      var new_input = $('<input type="date" name="valid_date" class="form-control">').attr({id:'valid_date'+current_id});
-      new_row3.append(new_label, new_input);
-
-
-
-      var new_row4 = $('<div class="form-group col-md-2"></div>')
-      var new_label = $('<label >訂貨數量:</label>').attr({for:'product_num'+current_id});
-      var new_input = $('<input type="number" name="product_num" class="form-control" min="1" value="1">').attr({id:'product_num'+current_id});
-      new_row4.append(new_label, new_input);
-
-
-      var new_row5 = $('<div class="form-group col-md-2"></div>');
-      var new_label = $('<label >備註:</label>').attr({for:'note'+current_id});
-      var new_input = $('<input type="text" name="note" class="form-control">').attr({id:'note'+current_id});
-      new_row5.append(new_label, new_input);
-
-      $("#product_form").append($('<div class="form-row"></div>').append(new_row, new_row1, new_row2, new_row3, new_row4, new_row5));
-      $("input[list=product_number_id"+(current_id-1)+ "]").removeAttr("onclick");
-  }
 
 
 

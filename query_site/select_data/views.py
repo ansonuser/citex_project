@@ -2,12 +2,12 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from .forms import InsertForm
-from .models import Product, Customer, Order, Order_detail, Employee, Order_stock, Order_stock_detail, Order_stock_product
-from .utils import tojson, tojsonframe
+from .models import Product, Customer, Order, Order_detail, Employee, Order_stock, Order_stock_detail, Order_stock_product, Order_detail_po
+from .utils import tojson, tojsonframe, custom_table
 from django.views.decorators.csrf import csrf_exempt
 import re
 from django.db.models import Max
-
+import datetime
 
 @csrf_exempt
 def updateproduct(request):
@@ -30,7 +30,6 @@ def updateproduct(request):
 @csrf_exempt
 def gettable(request):
     q = request.POST.dict()
-
     if q['data'] == "company":
         # name_list = ['company_number', 'company_name', 'site', 'contactor', 'phone','note']
         result_record = Customer.record.recent_records()
@@ -42,7 +41,6 @@ def gettable(request):
         product_record = tojsonframe(result_record)
         return JsonResponse(product_record)
     elif q['data'] =="product_with_stock":
-        # name_list = ['product_number_id', 'product_name']
         result_record = Order_stock_product.objects.filter(order_stock_po_id=q['order_stock_po']).values_list("product_number_id") 
         tmp = {}
         for i in result_record:
@@ -76,7 +74,6 @@ def gettable(request):
     elif q['data'] == 'query_actual_order_detail':
         del q['data']
         query_dict = {}
-        # query_dict["rest_of_date"] = ['','']
         for k,v in q.items():
             if v != '':
                 query_dict[k] = v
@@ -84,11 +81,13 @@ def gettable(request):
         for k in ['order_no', 'company_number_id', 'finished', 'deadline', 'expect_date', 'rest_of_date0', 'rest_of_date1']:
             if k not in query_dict:
                 query_dict[k] =''
-        print(query_dict)
-        # ['order_po','customer_no','customer_name','site','product_name',
-        # 'product_amount','epected_date','deadline','order_status','ship_date','product_po','invoice_condition','note','note1']
-        result = tojsonframe(Order.mymanager.get_actual_detail(** query_dict), keys="index")
-        return JsonResponse(result )
+        result_record = Order.mymanager.get_actual_detail(**query_dict)
+        # name_list = ['order_no','customer_id','site','contactor','expect_date','deadline','actual_ship_date','invoice_condition','finished','note','note1']
+        # result_record = custom_table(result_record, all_name_list = name_list, product_name_list=['product_name','product_amount', 'product_po'])
+        # result_record = tojson(result_record, name_list)
+        # print(result_record)
+        # result = tojsonframe(Order.mymanager.get_actual_detail(** query_dict), keys="index")
+        return JsonResponse({'form':result_record})
     elif q['data'] == 'ask_no_content':
         ask_no = q['val']
         result = Order.mymanager.ask_no_content(ask_no)
@@ -102,18 +101,96 @@ def gettable(request):
             tmp['product_number_id'].append(result[i][3])
             tmp['product_amount'].append(int(result[i][4]))
         return JsonResponse(tmp)
+    elif q['data'] == 'ask_no_content_all':
+        ask_no = q['val']
+        result = Order.mymanager.ask_no_content(ask_no, mode=2)
+        tmp = {}
+        name_list = ['company_number_id', 'pay_way', 'employee_id', 'note_expect_order','ask_date', 'demand_date', 'deadline']
+        tmp['ask_no'] = ask_no
+        for idx,name in enumerate(name_list):
+            if result[0][idx] is not None:
+                val = result[0][idx]
+            elif isinstance(result[0][idx], datetime.datetime):
+                val = result[0][idx].strftime("%Y/%m/%d")
+            else:
+                val = ''
+            tmp[name] = val
+        tmp['product'] = []
+        for row in range(len(result)):
+            tmp['product'].append({'product_number_id':result[row][-2]})
+            tmp['product'][row].update({'product_amount':int(result[row][-1])})
+        return JsonResponse(tmp)
     elif q['data'] == 'order_stock_po':
         result_record = Order_stock.objects.values_list("order_stock_po") 
         tmp = {}
         for i in result_record:
             tmp[i[0]] = ""
         return JsonResponse(tmp)
+    elif q['data'] == "order_content":
+        result = Order.mymanager.get_order_content(q['val'])
+        tmp = {}
+        tmp['result'] = result
+        return JsonResponse(tmp)
+    elif q['data'] == "order_no":
+        result = tojsonframe(Order.mymanager.get_order_no())
+        return JsonResponse(result)
+    elif q['data'] == 'product_po':
+        result_record = Order.mymanager.get_vailable_product_po(q['val']) 
+        tmp = {}
+        for i in result_record:
+            tmp[i[0]] = ""
+        return JsonResponse(tmp)
+    elif q['data'] == 'export_order':
+        try:
+            result = {}
+            update_form = q['val']
+            each_attribute = update_form.split('&')
+            for each in each_attribute:
+                splits = each.split('=')
+                if splits[1] != '':
+                    if splits[0] not in result:
+                        result[splits[0]] = [splits[1]]
+                    else:
+                        result[splits[0]].append(splits[1])
+            count = len(result['product_number_id'])     
 
-    elif q['data'] == "order_from_customer":
-        return JsonResponse({})
-    elif q['data'] == "order":
-        return JsonResponse({})
-
+            keys = [i for i in result.keys() if i not in ['order_no', 'actual_ship_date', 'invoice_condition']]
+            current_order_id = Order.objects.get(order_no=result['order_no'][0]).order_all_id
+            for i in range(count):
+                current_order_detail_id = Order_detail.objects.get(order_id_id= current_order_id , product_number_id=result['product_number_id'][i]).order_detail_id
+                update_dict = {'order_detail_id_id':current_order_detail_id}
+                for k in keys:
+                    update_dict.update({k:result[k][i]})
+                odp = Order_detail_po(**update_dict) 
+                odp.save()
+                Order.mymanager.update_export_stock_detail(**update_dict) #減去庫存
+            
+            Order.mymanager.update_export_order_status(order_id_id=current_order_id, actual_ship_date=result['actual_ship_date'][0], invoice_condition = result['invoice_condition'][0]) #更新出貨訂單狀態
+            return JsonResponse({})
+        except:
+            raise
+    elif q['data'] == 'renew_expect_order':
+        name_list = [ "ask_no", "company_number_id",'pay_way','employee_id','ask_date','demand_date', 'deadline',"note"]
+        result_record = Order_detail.record.expect_order_records(time_limit=q['limit'])
+        result_record = custom_table(result_record, all_name_list = name_list)
+        return JsonResponse({'form':result_record})
+    elif q['data'] == 'renew_actual_order':
+        result_record = Order_detail.record.expect_order_records(time_limit=30, mode=2)
+        name_list = ['ask_no','order_no', 'company_number_id', 'get_date', 'expect_date', 'deadline', 'pay_way', 'deliver_way', 'note1']
+        result_record = custom_table(result_record, all_name_list = name_list)
+        return JsonResponse({'form':result_record})
+    elif q['data'] == 'renew_stock_record':
+        result = Order_stock_product.mymanager.renew_stock_records(time_limit=q['limit'])
+        return JsonResponse({'form':result})
+    elif q['data'] == 'renew_stock_record_detail':
+        result = Order_stock_product.mymanager.renew_stock_records_detail(time_limit=q['limit'])
+        return JsonResponse({'form':result})
+    elif q['data'] == 'get_show_stock':
+        result = Order_stock_product.mymanager.show_stock(q['t1'],q['t2'])
+        return JsonResponse({'form':result})
+    elif q['data'] == 'get_invoice_and_stock':
+        result = Order_stock_product.mymanager.show_way_actual_invoiceunshipped()
+        return JsonResponse({'form':result})
 @csrf_exempt
 def updatecustomer(request):
     put = request.POST
@@ -132,14 +209,14 @@ def updatecustomer(request):
 @csrf_exempt
 def update_actual_order(request):
     put = request.POST
-    order_name_list = ['company_number_id', 'get_date', 'expect_date', 'deadline','pay_way', 'order_no', 'deliver_way', 'note', 'letter', 'ask_no']
-    order_detail_name_list = ['product_number_id', 'product_amount', 'product_po']
+    order_name_list = ['company_number_id', 'get_date', 'expect_date', 'deadline','pay_way', 'order_no', 'deliver_way','invoice_condition', 'note1','ask_no']
+    order_detail_name_list = ['product_number_id', 'product_amount']
     update_order = {}
     update_order_detail = {}
     for k in put.keys():
-        if k == "note":
-            update_order[k+'1'] = put.getlist(k)[0]
-        elif k == "letter":
+        if k == "note1":
+            update_order[k] = put.getlist(k)[0]
+        elif k == "invoice_condition":
             update_order['invoice_condition'] = True if put.getlist(k)[0] == 'true' else False
         elif k in order_detail_name_list:
             update_order_detail[k] = put.getlist(k)
@@ -171,7 +248,6 @@ def update_actual_order(request):
 def update_stock_order(request):
     if request.method=="POST":
         form = request.POST
-        print(form)
         update_dict = {}
         n = len([i for i in form.getlist("product_number_id") if i != ''])
         update_dict.update(form.dict())   
@@ -195,35 +271,30 @@ def update_stock_order(request):
 def update_stock_order_detail(request):
     if request.method=="POST":
         form = request.POST
-        print(form)
         update_dict = {}
         n = len([i for i in form.getlist("product_number_id") if i != ''])
         update_dict.update(form.dict())   
         del update_dict['csrfmiddlewaretoken'], update_dict['product_number_id'], update_dict['product_num']
         po = update_dict["order_stock_po"]
-        update_dict = {}
-        update_dict["order_stock_po_id"] = po 
         for i in range(n):
-            for k in ["product_number_id", "product_po", "valid_date", "product_num", "note"]:
+            update_dict = {}
+            current_id = Order_stock_product.objects.get(order_stock_po_id=po, product_number_id = form.getlist("product_number_id")[i]).order_stock_product
+            update_dict["order_stock_product_id"] = current_id
+            for k in ["product_po", "valid_date", "product_num", "note"]:
                 update_dict.update({k:form.getlist(k)[i]})
             osd = Order_stock_detail(**update_dict)
             osd.save()
-        Order_stock.objects.filter(order_stock_po=po).update(order_stock_status=1)
-
+        Order_stock_product.mymanager.update_stock_order_status(order_stock_po=po)
         return JsonResponse({"result":'success'})
     else:
         return JsonResponse({"result":'failed'})
  
-
-
 def index(request):
     return render(request,'select_data/index.html')
 
 def expect_order(request):
-    result_record = Order_detail.record.expect_order_records()
-    name_list = [ "company_number_id","ask_no","note",'pay_way','employee_id','ask_date','demand_date', 'deadline']
+    name_list = [ "ask_no", "company_number_id",'pay_way','employee_id','ask_date','demand_date', 'deadline',"note"]
     product_list = ['product_number_id','product_amount']
-    result_record = tojson(result_record, name_list+product_list)
     if request.method == 'POST':
         result = request.POST
         base_dict = {}
@@ -247,7 +318,7 @@ def expect_order(request):
                 tmp[k] = product_dict[k][i]
             od = Order_detail(**tmp)
             od.save()
-    return render(request,'select_data/expect_order.html',{"formset":result_record})
+    return render(request,'select_data/expect_order.html')
 
 def actual_order(request):
     return render(request,'select_data/actual_order.html')
@@ -265,13 +336,11 @@ def customer(request):
             return render(request, 'select_data/customer.html', {"duplicate":True,"formset":result_record})
         else:
             del result['csrfmiddlewaretoken']
-            # print(result)
             c = Customer(**result)
             c.save()
             result_record = tojson(Customer.record.recent_records(), name_list)
             return render(request, 'select_data/customer.html',{"duplicate":False,"formset":result_record} )
     return render(request,'select_data/customer.html', {"duplicate":"Empty","formset":result_record})
-
 
 def product(request):
     name_list = ['product_number', 'product_name']
@@ -313,51 +382,14 @@ def record(request):
 def revise_record(request):
     return render(request,'select_data/revise_record.html')
 
-
-
 def record_search(request):
     return render(request,'select_data/record_search.html')
 
-def insert(request):
-    # result = Order_detail.record.recent_records()
-    # if request.method == 'POST':
-    #     q = request.POST
-    #     # input table    
-    #     insert_form = InsertForm(q)
-    #     conn = make_connection(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    #     # command =  f"""SELECT company_name FROM select_data_company
-    #     #         """
-    #     # print(insert_form.__dict__)
-    #     # cursor = conn.cursor()
-    #     # cursor.execute(command)
-    #     # _ = cursor.fetchall()
-    #     # one = cursor.fetchone()
-    #     # print(one)
-    #     # a = [i[0] for i in _]
-    #     # if 'TSMC' in a:
-    #     #     print("pass1")
-    #     # print(a)
-    #     # print(a[0] == 3)
-    #     # print(a[0][0] == 'TSMC')
-        
-    #     current_id_dict = utils_insert_single(conn, insert_form)
-        
-    #     succeed = utils_insert_relation(conn, insert_form, current_id_dict)
-    #     conn.close()
-    #     # if succeed:
-    #     #     print("update database")
-    #     # else:
-    #     #     print("[Error] Fail to update database")
-    #     # display record
-    #     result = Order_detail.record.recent_records()
-    #     if insert_form.is_valid():
-    #         pass  
-
-    return render(request,'select_data/insert.html')#, {"formset":result})
+def research_order(request):
+    return render(request,'select_data/research_order.html')#, {"formset":result})
 
 
-def select(request):
-    return render(request,'select_data/select.html')
+
 
 
 

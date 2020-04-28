@@ -1,182 +1,268 @@
+
 {% extends 'layout.html' %}
 
 {% block content %}
 
-<div class="container">
-    <div class="card">
-        <div class="card-body">
-            <form action="#" class="pull-left col-md-12" method="post"> {% csrf_token %}
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="company_number_id">客戶編號</label>
-                        <input type="text" class="form-control" list="company_number_id" name="company_number_id" required="required">
-                        <datalist id="company_number_id">
-                        </datalist>
-                        
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="company_name">公司</label>
-                        <input type="text" class="form-control" id="company_name" disabled='disabled' required="required">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="site">廠區</label>
-                        <input type="text" class="form-control" id="site" disabled='disabled'>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="contact_window">聯絡人</label>
-                        <input type="text" class="form-control" id="contact_window" disabled='disabled'>
-                    </div>
+<div class="card">
+    <div class="card-body">
+        <form class="pull-left col-md-12" method="post" id='main_form'> {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="ask_no">詢價編號</label>
+                    <input type="text" class="form-control" name="ask_no" required='required'>
                 </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="company_number_id">客戶編號</label>
+                    <input type="text" class="form-control" list="company_number_id" name="company_number_id" required="required">
+                    <datalist id="company_number_id">
+                    </datalist>
+                    
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="company_name">公司</label>
+                    <input type="text" class="form-control" disabled='disabled' required="required">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="site">廠區</label>
+                    <input type="text" class="form-control" disabled='disabled'>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="contact_window">聯絡人</label>
+                    <input type="text" class="form-control" disabled='disabled'>
+                </div>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="ask_no">詢價編號</label>
-                        <input type="text" class="form-control" id="ask_no" name="ask_no" required='required'>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="pay_way">付款方式</label>
-                        <input type="text" class="form-control" id="pay_way" name="pay_way">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="employee_id">填表人</label>
-                        <input type="text" class="form-control" list="employee_id" name="employee_id" required="required">
-                        <datalist id="employee_id">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="pay_way">付款方式</label>
+                    <input type="text" class="form-control" name="pay_way">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="employee_id">填表人</label>
+                    <input type="text" class="form-control" list="employee_id" name="employee_id" required="required">
+                    <datalist id="employee_id">
+                    </datalist>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="note_expect_order">備註</label>
+                    <input type="text" class="form-control" name="note_expect_order">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="ask_date">詢價時間</label>
+                    <input type="date" class="form-control" name="ask_date" required="required">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="demand_date">需求時間</label>
+                    <input type="date" class="form-control" name="demand_date">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="deadline">交貨期限</label>
+                    <input type="date" class="form-control" name="deadline">
+                </div>
+            </div>
+            <div name="product_form">
+                <div class="form-row" name='growth_row'>
+                    <div class="form-group col-md-4">
+                        <label for="product_number_id">商品編號</label>
+                        <input type="text" class="form-control"  name="product_number_id" list="product_number_id"  onclick= "addcolumn_product(0)">
+                        <datalist id="product_number_id">
                         </datalist>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="note_expect_order">備註</label>
-                        <input type="text" class="form-control" id="note_expect_order" name="note_expect_order">
-                    </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-4">
-                        <label for="ask_date">詢價時間</label>
-                        <input type="date" class="form-control" id="ask_date" name="ask_date" required="required">
+                        <label for="product_name">商品名稱</label>
+                        <input type="text" class="form-control" disabled='disabled'>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="demand_date">需求時間</label>
-                        <input type="date" class="form-control" id="demand_date" name="demand_date">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="deadline">交貨期限</label>
-                        <input type="date" class="form-control" id="deadline" name="deadline">
+                        <label for="product_amount">商品數量</label>
+                        <input type="text" class="form-control" name="product_amount" >
                     </div>
                 </div>
-                <div id="product_form">
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="product_number_id0">商品編號</label>
-                            <input type="text" class="form-control"  name="product_number_id" list="product_number_id0"  onclick= "addcolumn_product()">
-                            <datalist id="product_number_id0">
-                            </datalist>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="product_name">商品名稱</label>
-                            <input type="text" class="form-control" disabled='disabled'>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="product_amount">商品數量</label>
-                            <input type="text" class="form-control" name="product_amount" >
-                        </div>
-                    </div>
-                </div>
+            </div>
 
-                <div class="col-md-12">
-                    <div class="btn-toolbar pull-right" role="toolbar" arial-label="twbgs">
-                        <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
-                            <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#check">
-                                歷史紀錄
-                            </button>
-                            <div class="modal fade" role="dialog" aria-labelledby="tile" aria-hidden="true" tabindex="-1" id="check">
-                                <div class="modal-dialog modal-xl" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header" >
-                                            <div>
-                                                <h2 class="modal-title pull-left"  id="title">預期訂單</h2>
-                                            </div>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                              </button>
-                                        </div>
-                          
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="card col-md-12" style="border-style: hidden; overflow-x:auto; ">
-                                                    <table class="table" style="margin:auto;margin-left: 3rem;  border-collapse: collapse;">
-                                                        <thead class='thead-dark'>
-                                                                <th scope="col">客戶編號</th>
-                                                                <th scope="col">詢價編號</th>
-                                                                <th scope="col">付款方式</th>
-                                                                <th scope="col">填表人</th>
-                                                                <th scope="col">詢價時間</th>
-                                                                <th scope="col">需求時間</th>
-                                                                <th scope="col">交貨期限</th>
-                                                                <th scope="col">商品名稱</th>
-                                                                <th scope="col">商品數量</th>
-                                                                <th scope="col">備註1</th>
-                                                                <th scope="col"></th>
-                                                        </thead>
-                                                        <tbody>
-                                                            {% for eachform in formset%}
-                                                            <tr>
-                                                                {% for key,value in eachform.items %}
-                                                                    <td >{{value}}</td> 
-                                                                {% endfor %}
-                                                                <td style='white-space: nowrap'>
-                                
-                                                                    <div class="btn-toolbar" role="toolbar" style="display: inline;">
-                                                                        <div class="btn-group mr-2" role="group"> 
-                                                                            <button type="button" style="background-color: transparent; border: transparent;" name="delete">&#x274C;</button>
-                                                                        </div>
-                                                                        <div class="btn-group mr-2" role="group">
-                                                                            <button class="btn btn-secondary" type="button" name="edit" >編輯</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                             {% endfor %}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div> 
-                            
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-                                        </div>
-                                    </div>
-                                </div>
+            <div class="col-md-12">
+                <div class="btn-toolbar pull-right" role="toolbar" arial-label="twbgs">
+                    <!-- <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
+                        <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#check">
+                            歷史紀錄
+                        </button>
+                    </div>  -->
+                    <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
+                        <button class="btn btn-secondary" type="submit" onclick="check_submit()">
+                            新增
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="card" style="margin-top:3rem;">
+    <div class="card-header" style="background-color:white;">
+        <h2> <span class="badge badge-secondary">歷史紀錄</span></h2>
+    </div>
+    <div class="card-body" style="border-style: hidden; overflow-x:auto; ">
+        <div class="row" style="text-align: center; margin-bottom: .5rem;">
+            <label style="float:right; margin-bottom: .5rem;vertical-align: middle;">
+                修改時間為
+                <select name="select_time_limit">
+                    <option value="30">30</option>
+                    <option value="60">60</option>
+                    <option value="90">90</option>
+                    <option value="180">180</option>
+                    <option value="All"> All</option>
+                </select>
+                天內
+            </label>
+        </div>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-bordered table-striped mb-0" style="border-collapse: collapse;" id='expect_order_table'>
+                <thead class='thead-dark'>
+                    <tr>
+                        <th scope="col" v-for='col in columns'>
+                            [[col]]
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for='row in tableData'>
+                        <td v-for='element in row'>
+                            [[element]]
+                        </td>
+                        <td style='white-space: nowrap'>
+                            <div class="btn-group mr-2" role="group">
+                                <button class="btn btn-secondary" type="button" name="edit"  data-toggle="modal" data-target="#modified_table" onclick="feedinput(this)">編輯</button>
                             </div>
-                        </div> 
-                        <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
-                            <button class="btn btn-secondary" type="submit" onclick="check_submit()">
-                                新增
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
+<div class='modal fade' v-show='isedit' role='dialog' aria-hidden="true" tabindex="-1" id="modified_table">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+            </div>
+            <div class="modal-body" name='modified-body'>
+                <!-- <form type='post'>
+                    <div class="form-row" v-for="eachrow in rows">
+                        <div class="form-group">
+                            <label :for="eachrow.key">[[eachrow.label ]]</label>
+                            <input type="text" :name="eachrow.key" class='form-control'>
+                        </div>
+                    </div>               
+                </form> -->
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">修改</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <ol style="display:none" id="custom_table"></ol>
 
 <ol style="display:none" id="product_table"></ol>
 
+
 {% load static %}
 <script>
 
+    var table_vue = new Vue({
+        delimiters: ['[[', ']]'],
+        el:"#expect_order_table",
+        data:{
+            columns : ['詢價編號','客戶編號','付款方式','填表人','詢價時間','需求時間','交貨期限','備註1','商品編號','商品數量', ''],
+            tableData : [],
+        }
+    })
+
     $(document).ready(function(){
         $("input[list=company_number_id]").on("input", custom_tree);
-        $("input[list='product_number_id0']").on("input", product_tree);    
+        $("input[list='product_number_id']").on("input", product_tree);  
+        $('select[name="select_time_limit"]').change(renewtable)  
+        renewtable();
         employeeing("{% url 'select_data:gettable'%}");
         producting("{% url 'select_data:gettable'%}");
         companying("{% url 'select_data:gettable'%}");
     })
+    function renewtable(){
+        var time_input = $('select[name="select_time_limit"]').val();
+        $.ajax({
+            url:"{% url 'select_data:gettable'%}",
+            data:{'data':'renew_expect_order',
+                  'limit': time_input},
+            type:'POST',
+            success:function(x){
+                table_vue.tableData = x['form'];
+            }
+        })
+    }
+
+    function feedinput(obj){
+        var ask_no = obj.parentNode.parentNode.parentNode.children[0].innerText;
+        var result = $("[name='modified-body']");
+        result[0].innerHTML = '';
+        $.ajax({
+            url:"{% url 'select_data:gettable'%}",
+            data: { 'data':'ask_no_content_all','val':ask_no},
+            type:'POST',
+            success: function(data){
+                var keys = Object.keys(data);
+                var count = 0;
+                function recursive(current_row){
+                    if (current_row.getAttribute('name') === 'product_form' ){
+                        return result
+                    }else{
+                        result.append(current_row.outerHTML);
+                        do{
+                            var b = $(result).find('input[name="'+ keys[count]+ '"]').val(data[keys[count]]);
+                            if(b.length != 0){
+                                if(keys[count] == 'company_number_id'){
+                                    var c = $(result).find('[name="'+ keys[count]+ '"]');
+                                    c[0].nextElementSibling.remove();
+                                    c.val(data[keys[count]]).on("input", custom_tree).trigger("input");           
+                                }
+                                count += 1;
+                            }else{
+                                break;
+                            }
+                        }while(1)
+                        return recursive(current_row.nextElementSibling)
+                    }
+                }
+                var a = $('#main_form')[0].children[0].nextElementSibling
+                recursive(a);
+                $(result).append($('<div name="product_form"></div>'));
+                product = data['product'];
+                n = product.length;
+                count = 0
+                while(count != n){
+                    addcolumn_product(1);
+                    var a = $(result).find("input[list='product_number_id']")[count];
+                    $(a).val(product[count]['product_number_id']).on("input", product_tree).trigger("input");
+                    $(a.parentNode.parentNode.childNodes[5].lastElementChild).attr({'value':product[count]['product_amount']});
+                    count += 1;
+                }
+                addcolumn_product(1);
+            },
+        })
+    }
+
     function custom_tree(e){
         custom_tree_url(e, "{% url 'select_data:gettable'%}")
     }
@@ -184,41 +270,10 @@
     function product_tree(e){
         product_tree_url(e, "{% url 'select_data:gettable'%}")
     }
-      
-
-
-    function addcolumn_product(){
-        // var input_form = document.getElementById("product_form").value;
-        var current_id = document.getElementsByName("product_number_id").length;
-
-        var new_row = $('<div class="form-group col-md-4"></div>');
-        var new_label = $('<label >商品編號</label>').attr({for:'product_number_id'+current_id}); 
-        var new_input = $('<input type="text" name="product_number_id" class="form-control"'+ "list=product_number_id"+current_id+'>').attr({onclick:"addcolumn_product()"});
-        $(new_input).on("input", product_tree);
-        var select_option = $("#product_number_id0")[0].innerHTML;
-        var data_list = document.createElement("datalist");
-        new_row.append(new_label, new_input, $(data_list).attr({"id":"product_number_id"+current_id}).html(select_option));
-
-
-
-        var new_row1 = $('<div class="form-group col-md-4"></div>');
-        var new_label1 = $('<label for="product_name">商品名稱</label>');
-        var new_input1 = $('<input type="text" class="form-control" disabled="disabled">').attr({id:'product_name'+current_id});
-        new_row1.append(new_label1, new_input1);
-
-        var new_row2 = $('<div class="form-group col-md-4"></div>')
-        var new_label2 = $('<label> 商品數量</label>').attr({for:'product_amount'+current_id});
-        var new_input2 = $('<input type="text" class="form-control" name="product_amount">').attr({id:'product_amount'+current_id});
-        new_row2.append(new_label2, new_input2);
-
-        $("#product_form").append($('<div class="form-row"></div>').append(new_row, new_row1, new_row2));
-        $("[list=product_number_id"+(current_id-1) +"]").removeAttr("onclick");
-    }
-
-
     $(".active").removeClass("active");
     $("#order_bar").addClass("active");
-
+    $("a[href='/select_data/expect_order/']").addClass("active");
+    
 </script>
 
 {% endblock %}

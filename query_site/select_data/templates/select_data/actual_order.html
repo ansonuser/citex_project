@@ -18,10 +18,16 @@
 {% endblock %}
 {% block content %}
 
-<div class="container">
+
     <div class="card">
         <div class="card-body">
             <form  method="post" class="pull-left col-md-12" id="insert_form"> {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="order_no">訂單編號</label>
+                        <input type="text" class="form-control" name="order_no">
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="company_number_id">客戶編號</label>
@@ -45,220 +51,134 @@
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-4">
                         <label for="get_date">接單時間</label>
-                        <input type="date" class="form-control" id="get_date" name="get_date">
+                        <input type="date" class="form-control" name="get_date">
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-4">
                         <label for="expect_date">預計時間</label>
-                        <input type="date" class="form-control" id="expect_date" name="expect_date">
+                        <input type="date" class="form-control" name="expect_date">
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-4">
                         <label for="deadline">交貨期限</label>
-                        <input type="date" class="form-control" id="deadline" name="deadline">
+                        <input type="date" class="form-control" name="deadline">
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="order_no">訂單編號</label>
-                        <input type="text" class="form-control" id="order_no" name="order_no">
-                    </div>
+
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="pay_way">付款方式</label>
-                        <input type="text" class="form-control" id="pay_way" name="pay_way">
+                        <input type="text" class="form-control" name="pay_way">
                     </div>
                     <div class="form-group col-md-3">
                         <label for="deliver_way">運送方式</label>
-                        <select class="form-control" id="deliver_way" name="deliver_way">
+                        <select class="form-control" name="deliver_way">
                             <option value="自取">自取</option>
                             <option value="寄送">寄送</option>
                         </select>
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="note">備註</label>
-                        <input type="text" class="form-control" id="note" name="note">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="letter">委託書</label>
-                        <select name="letter" id="letter" type="text" class="form-control">
+                        <label for="invoice_condition">發票開立情形</label>
+                        <select type="text" class="form-control" name="invoice_condition">
                             <option value="false">否</option>
                             <option value="true">是</option>
                         </select>
-                        <!-- <input type="checkbox"  id="letter" name="letter"> -->
-                 
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="note">備註</label>
+                        <input type="text" class="form-control" name="note1">
                     </div>
                 </div>
-                <div id="product_form">
-                    <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="product_number_id0">商品編號</label>
-                            <input type="text" class="form-control"  name="product_number_id" list="product_number_id0" onclick= "addcolumn_product()">
-                            <datalist id="product_number_id0">
+                <div name="product_form">
+                    <div class="form-row" name="growth_row">
+                        <div class="form-group col-md-4">
+                            <label for="product_number_id">商品編號</label>
+                            <input type="text" class="form-control"  name="product_number_id" list="product_number_id" onclick= "addcolumn_product(0)">
+                            <datalist id="product_number_id">
                             </datalist>
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <label for="product_name">商品名稱</label>
-                            <input type="text" class="form-control" id="product_name" disabled="disabled">
+                            <input type="text" class="form-control" disabled="disabled">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <label for="product_amount" >商品數量</label>
-                            <input type="number" name="product_amount" class="form-control" id="product_amount0">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="product_po" >商品批號</label>
-                            <input type="text" name="product_po" class="form-control" id="product_po">
+                            <input type="number" name="product_amount" class="form-control" >
                         </div>
                     </div>
                 </div>
-              
                 <div class="col-md-12">
                     <div class="btn-toolbar pull-right" role="toolbar" arial-label="twbgs">
-                        <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
-                            <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#check">
-                                查詢
-                            </button>
-                            <div class="modal fade" role="dialog" aria-labelledby="tile" aria-hidden="true" tabindex="-1" id="check">
-                                <div class="modal-dialog modal-xl" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title"  id="title">訂單查詢</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                              </button>
-                                        </div>
-                    
-                          
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="card col-md-3" style="border-style: hidden; left:0px;">
-                                                    <div class="card-body">
-                                                        <div name="option_block" class="text-left col-md-12">
-                                                            <label for="select_fe" style="font-size: 20px;font-weight: bolder;">查詢欄位</label>
-                                                            <select  class="form-control" name="select_fe" id="select_fe" style="border:2px solid;margin-bottom: 10px;">
-                                                                <option value="order_no">訂單編號</option>
-                                                                <option value="company">公司</option>        
-                                                                <option value="rest_date">交期</option>
-                                                                <option value="finished">訂單狀態</option>
-                                                                <option value="deadline">交貨期限</option>
-                                                                <option value="expect_date">預計交期</option>
-                                                            </select>
-                                                    
-                                                            <div id="option_div" style="padding-top:5px;padding-bottom: 30px;">
-                                                                <button id="add_select" type="button" class="btn-secondary btn pull-right">選擇</button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12" style="padding-top:30px;">
-                                                            <button class="btn-secondary btn pull-right"  type="button" onclick="select_by_condition()">查詢</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="card col-md-9"  style="border-style: hidden; overflow-x:auto;">
-                                                    <table class="table" style="margin-top: 20px;">
-                                                        <thead class="thead-light">
-                                                            <tr>
-                                                                <th scope="col">訂單標號</th>
-                                                                <th scope="col">客戶編號</th>
-                                                                <th scope="col">客戶名稱</th>
-                                                                <th scope="col">廠區</th>
-                                                                <th scope="col">商品名稱</th>
-                                                                <th scope="col">商品數量</th>
-                                                                <th scope="col">預計交貨</th>
-                                                                <th scope="col">交貨期限</th>
-                                                                <th scope="col">訂單狀態</th>
-                                                                <th scope="col">出貨日期</th>
-                                                                <th scope="col">商品批號</th>
-                                                                <th scope="col">發票開立狀態</th>
-                                                                <th scope="col">備註1</th>
-                                                                <th scope="col">備註2</th>
-                                                                <th scope="col"></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="select_contain">
-                                        
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div> 
-                            
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
-                            <button class="btn btn-secondary" type="button" id="history">
-                                歷史紀錄
-                            </button>
-                        </div>
                         <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
                             <button type="button" class="btn btn-secondary" id="update" onclick="add_actual()">
                                 新增
                             </button>                
                         </div>
-
                     </div>
-                </div>
+                </div> 
             </form>
         </div>
     </div>
-</div>
 
-<div class="modal fade" tabindex="-1" role="dialog" style="display: none; padding-top: 30px;" aria-modal="true" aria-labelledby="tile" id="add_success_id">
-    <div class="modal-dialog" role="document" style="border-color: black; border-width: 2px;">
-        <div class="modal-content">
-            <div class="modal-header" style="background:rgb(203, 203, 236) ; border-color: black;">
-                <h3 class="modal-title">
-                    <span class="badge badge-primary"> Info </span>
-                </h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="close_modal()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="background-color: #c5dbdf; border-color: #8ba0b6; border-width: 5px;">
-                <p style="font-weight: bolder;font-size: 20px; color:deepskyblue(138, 68, 68);">修改成功<br><br>
-                </p>
-            </div>
+
+
+
+<div class="card" style="margin-top:3rem;">
+    <div class="card-header" style="background-color:white;">
+        <h2> <span class="badge badge-secondary">歷史紀錄</span></h2>
+    </div>
+    <div class="card-body" style="border-style: hidden; overflow-x:auto; ">
+        <div class="row" style="text-align: center; margin-bottom: .5rem;">
+            <label style="float:right; margin-bottom: .5rem;vertical-align: middle;">
+                修改時間為
+                <select name="select_time_limit">
+                    <option value="30">30</option>
+                    <option value="60">60</option>
+                    <option value="90">90</option>
+                    <option value="180">180</option>
+                    <option value="All"> All</option>
+                </select>
+                天內
+            </label>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-bordered table-striped mb-0" style="border-collapse: collapse;" id='actual_order_table'>
+                <thead class='thead-dark'>
+                    <tr>
+                        <th scope="col" v-for='col in columns'>
+                            [[col]]
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for='row in tableData'>
+                        <td v-for='element in row'>
+                            [[element]]
+                        </td>
+                        <td style='white-space: nowrap'>
+                            <div class="btn-group mr-2" role="group">
+                                <button class="btn btn-secondary" type="button" name="edit"  data-toggle="modal" data-target="#modified_table" onclick="feedinput(this)">編輯</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
 
 <script>
-    // var aaa = "NON";
-    function addcolumn_product(){
-      
-        var current_id = document.getElementsByName("product_number_id").length;
-        var new_row = $('<div class="form-group col-md-3"></div>');
-        var new_label = $('<label >商品編號</label>').attr({for:'product_number_id'+current_id}); 
-        var new_input = $('<input type="text" name="product_number_id" class="form-control"'+ "list=product_number_id"+current_id+'>').attr({onclick:"addcolumn_product()"});
-        $(new_input).on("input", product_tree);
-        var select_option = $("#product_number_id0")[0].innerHTML;
-        var data_list = document.createElement("datalist");
-        new_row.append(new_label, new_input, $(data_list).attr({"id":"product_number_id"+current_id}).html(select_option));
 
-        var new_row1 = $('<div class="form-group col-md-3"></div>');
-        var new_label1 = $('<label for="product_name" >商品名稱</label>');
-        var new_input1 = $('<input type="text" disabled="disabled" class="form-control">').attr({id:'product_name'+current_id});
-        new_row1.append(new_label1, new_input1);
 
-        var new_row2 = $('<div class="form-group col-md-3"></div>')
-        var new_label2 = $('<label >商品數量</label>').attr({for:'product_amount'+current_id});
-        var new_input2 = $('<input type="text" name="product_amount" class="form-control">').attr({id:'product_amount'+current_id});
-        new_row2.append(new_label2, new_input2);
-
-        var new_row3 = $('<div class="form-group col-md-3"></div>')
-        var new_label3 = $('<label >商品批號</label>').attr({for:'product_po'+current_id});
-        var new_input3 = $('<input type="text" name="product_po" class="form-control">').attr({id:'product_po'+current_id});
-        new_row3.append(new_label3, new_input3);
-
-        $("#product_form").append($('<div class="form-row"></div>').append(new_row, new_row1, new_row2, new_row3));
-        $("input[list=product_number_id"+(current_id-1)+ "]").removeAttr("onclick");
-    }
-
+    var table_vue = new Vue({
+        delimiters: ['[[', ']]'],
+        el:"#actual_order_table",
+        data:{
+            columns : ['詢價編號','訂單編號','客戶編號','接單時機','預計時間','交貨期限','付款方式','運送方式','備註2','商品編號','商品數量', ''],
+            tableData : [],
+        }
+    })
     function custom_tree(e){
         custom_tree_url(e, "{% url 'select_data:gettable'%}")
     }
@@ -266,7 +186,19 @@
     function product_tree(e){
         product_tree_url(e, "{% url 'select_data:gettable'%}")
     }
-      
+
+    function renewtable(){
+        var time_input = $('select[name="select_time_limit"]').val();
+        $.ajax({
+            url:"{% url 'select_data:gettable'%}",
+            data:{'data':'renew_actual_order',
+                  'limit': time_input},
+            type:'POST',
+            success:function(x){
+                table_vue.tableData = x['form'];
+            }
+        })
+    }  
     
     function drawcontent(){
         var a = $("input[list=ask_order_no]").val();
@@ -280,24 +212,21 @@
             success: function(result){
                 for(var key in result){
                     if(key == "company_number_id"){
-                        $(document.getElementsByName("company_number_id")[0]).val(result['company_number_id']);
-                        $(document.getElementsByName("company_number_id")[0]).trigger("custom_tree");
+                        $(document.getElementsByName("company_number_id")[0]).val(result['company_number_id']).trigger("input");
+                        // $(document.getElementsByName("company_number_id")[0])
                     }else if(key == "product_number_id"){
                         var n = result[key].length;
                         var m = document.getElementsByName(key).length-1;
                         if(n>m){
                             while(n!=m){
-                                addcolumn_product();
+                                addcolumn_product(0);
                                 m++;
                             }
                         }
                         for(var i=0; i<n; i++){
-                            $("input[list='product_number_id"+ i + "']").val(result[key][i]);
-                            $("input[list='product_number_id"+ i + "']").on("product_tree", function(event){
-                                product_tree(event);
-                            });    
-                            $("input[list='product_number_id"+ i + "']").trigger("product_tree");
-                            $("#product_amount"+i).attr({'value':result['product_amount'][i]});
+                            var a = $("input[list='product_number_id']")[i];
+                            $(a).val(result[key][i]).on("input", product_tree).trigger("input");    
+                            $(a.parentNode.parentNode.childNodes[5].lastElementChild).attr({'value':result['product_amount'][i]});
                         }
                         
                     }else{
@@ -331,100 +260,22 @@
         }
     }
 
-    function select_by_condition(){
-        var a = $("#select_fe");
-        var send_json = {};
-        do{
-            a = $(a).next()[0];
-            for(var i=1; i<$(a).children().length; i++){
-                send_json[a.children[i].name] = a.children[i].value;
-            }
-        }while(a.id == '');
-
-        send_json['data'] = "query_actual_order_detail";
-        $.ajax({
-            url : "{% url 'select_data:gettable'%}",
-            type:"POST",
-            data: send_json,
-            success:function(result){
-                var row = "";
-                var key = 0;
-                for(var key in result){    
-                    row += "<tr>";
-                    for(var index in result[0]){
-                        if(index == 8){
-                            if(result[key][index]==false){
-                                row += "<td><input type='checkbox' name='finished_select'></td>";
-                            }else{
-                                row += "<td><input type='checkbox' name='finished_select' checked></td>";
-                            }
-                            
-                        }else if(index == 11){
-                            if(result[key][index]==false){
-                                row += "<td><input type='checkbox' disabled='disabled'></td>";
-                            }else{
-                                row += "<td><input type='checkbox' disabled='disabled' checked></td>";
-                            }
-                        }else{
-                            row +=  "<td>" + result[key][index]+"</td>";
-                        }
-                    }
-                    row += "<td><button type='button' style='background-color: transparent; border: transparent;'>&#x274C;</button></td></tr>";
-                }
-                $("#select_contain").append($(row));
-            }
-        })
-    }
+    
     $(document).ready(function(){
-        $("#add_select").on("click", function(){
-            var select = $("#select_fe option:selected");
-            var new_row = $('<div class="form-group col-md-12"></div>');
-            var new_label = $('<label></label>');   
-            var new_input = $('<input type="text" class="form-control">');                                                 
-            if(select.val() === "order_no"){
-                new_label.attr({for:'order_no'}).text("訂單編號");
-                new_input.attr({name:'order_no'});
-            }else if(select.val()==="company"){
-                new_label.attr({for:'company_number_id'}).text("客戶編號");
-                new_input.attr({name:'company_number_id'});
-            }else if(select.val()==="rest_date"){
-                new_label.attr({for:'rest_date1'}).text("交期");
-                var new_input = $('<input type="number" class="form-control" min="0" name="rest_date0"><input type="number" class="form-control" min="0" name="rest_date1">');   
-              
-            }else if(select.val()==="finished"){
-                new_label.attr({for:'finished'}).text("訂單狀態");
-                new_input.attr({name:'finished'});
-            }else if(select.val()==="deadline"){
-                new_label.attr({for:'deadline'}).text("交貨期限");
-                var $new_input = $('<input type="text" class="form-control">');   
-                new_input.attr({name:'deadline'});
-            }else if(select.val()==="expect_date"){
-                new_label.attr({for:'expect_date'}).text("預計交期");
-                new_input.attr({name:'expect_date'});
-            }else if(!$select.val()){
-                $("#add_select").attr({'disabled':true});
-                return true;
-            };
-                      
-            new_row.append(new_label, new_input);
-            new_row.insertBefore("#option_div");
-            $("#select_fe option:selected").remove();
-        });
-   
+        $('select[name="select_time_limit"]').change(renewtable)  
+        renewtable();
         ask_noing( "{% url 'select_data:gettable'%}");
         companying( "{% url 'select_data:gettable'%}");
         producting( "{% url 'select_data:gettable'%}");
     
-  
-    $(".active").removeClass("active");
-    $("#order_bar").addClass("active");
+        $(".active").removeClass("active");
+        $("#order_bar").addClass("active");
+        $("a[href='/select_data/actual_order/']").addClass("active");
 
-    document.getElementsByName("company_number_id")[0].addEventListener('input',custom_tree );
-    $(document.getElementsByName("company_number_id")[0]).on("custom_tree", function(event){
-        custom_tree(event);
-    });
-
-    $("input[list='product_number_id0']").on("input", product_tree);    
+        $("input[list='company_number_id']").on("input", custom_tree);  
+        $("input[list='product_number_id']").on("input", product_tree);    
 });
+
+
 </script>
 {% endblock %}

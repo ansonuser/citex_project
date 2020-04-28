@@ -15,19 +15,29 @@
             }
         }
     </script>
-    <h1 class='center' id = "result">Login Page</h1>
-    <br>
-    <br>
-    <form  class='form' onsubmit="assure(); return false;">
-        <label for="account" class="col-sm-4 col-xs-4" style="text-align:right">Account:</label>
-        <input type="text" class="col-sm-8 col-xs-8" id="account" name="account" placeholder="帳號"><br><br>
-        <label for="password" class="col-sm-4 col-xs-4"  style="text-align:right">Password:</label>
-        <input type="password"  class="col-sm-8 col-xs-8" id="password-field" name="password" placeholder="密碼"><br><br><br>
-        <!-- <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span> -->
-        <div  style="text-align:right; margin: 0 auto; width:100%">
-            <button type="submit"> Login </button>
+ 
+
+    <div class="card">
+        <div class="card-title">
+            <h1 class='center' id = "result">Login Page</h1>
         </div>
-    </form>
+        <div class="card-body">
+            <form class='form' onsubmit="assure(); return false;">
+                <div class="form-group">
+                    <label for="account" class="col-sm-4 col-xs-4" style="text-align:right">Account:</label>
+                    <input type="text" class="col-sm-8 col-xs-8 form-control" id="account" name="account" placeholder="帳號">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-4 col-xs-4"  style="text-align:right">Password:</label>
+                    <input type="password"  class="col-sm-8 col-xs-8 form-control" id="password-field" name="password" placeholder="密碼">
+                </div>
+                <div  style="text-align:right; margin: 0 auto; width:100%">
+                    <button type="submit"> Login </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
 {% endblock %}
 
 <!-- action = "record/"  -->

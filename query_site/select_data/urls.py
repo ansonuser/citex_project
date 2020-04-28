@@ -5,9 +5,8 @@ from . import views
 app_name = 'select_data'
 urlpatterns = [
     path('', views.index, name = 'index'),
-    path('insert/', views.insert, name = 'insert'),
     path('record/', views.record, name = 'record'),
-    path('select/', views.select, name = 'select'),
+    path('research_order/', views.research_order, name = 'research_order'),
     path('expect_order/', views.expect_order, name = 'expect_order'),
     path('actual_order/', views.actual_order, name = 'actual_order'),
     path('customer/', views.customer, name = 'customer'),

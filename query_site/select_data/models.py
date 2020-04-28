@@ -31,34 +31,88 @@ class CustomerManager(models.Manager):
         return respond
 
 class OrderManager(models.Manager):
-    def expect_order_records(self):
+    def expect_order_records(self, time_limit, mode = 1):
         from django.db import connection
-        # [ "company_number_id","ask_no","note",'pay_way','charger','ask_date','demand_date', 'deadline']
-        # ['product_name','product_amount']
+        respond = {}
+        if mode == 1:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT DISTINCT o.order_all_id, ask_no, company_number_id, pay_way, e.employee_name, ask_date, demand_date, deadline, note FROM select_data_order o, select_data_employee e
+                    WHERE o.employee_id = e.employee_id AND ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
+                    """,({'time_limit':time_limit}))
+                respond.update({'ask_no_info':cursor.fetchall()})
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT od.order_id_id, od.product_number_id, od.product_amount FROM select_data_order o, select_data_order_detail od
+                    WHERE o.order_all_id = od.order_id_id  AND ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
+                    """,({'time_limit':time_limit}))
+                respond.update({'ask_no_product_info':cursor.fetchall()})
+
+        elif mode == 2:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT DISTINCT o.order_all_id, o.ask_no, o.order_no, company_number_id, get_date, expect_date, deadline, pay_way, deliver_way, note1 FROM select_data_order o, select_data_employee e
+                    WHERE  ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
+                    """,({'time_limit':time_limit}))
+                respond.update({'order_no_info':cursor.fetchall()})
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT od.order_id_id,  od.product_number_id, od.product_amount FROM select_data_order o, select_data_order_detail od
+                    WHERE o.order_all_id = od.order_id_id  AND ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
+                    """,({'time_limit':time_limit}))
+                respond.update({'order_no_product_info':cursor.fetchall()})            
+        return respond
+
+    def ask_no_content(self, ask_no, mode = 1):
+        """
+        mode: 1, draw for actual order
+              2, for modification of expect order
+        """
+        from django.db import connection
+        with connection.cursor() as cursor:
+            if mode == 1:
+                cursor.execute(
+                    """
+                    SELECT company_number_id, pay_way, deadline, od.product_number_id, 
+                    od.product_amount FROM select_data_order o, select_data_order_detail od
+                    WHERE o.order_all_id = od.order_id_id AND o.ask_no =:ask_no """, ({'ask_no':ask_no}))
+            elif mode == 2:
+                cursor.execute(
+                    """
+                    SELECT company_number_id, pay_way, e.employee_name ||'-' || cast(e.employee_id as text), note, ask_date, demand_date, deadline, od.product_number_id, 
+                    od.product_amount FROM select_data_order o, select_data_order_detail od, select_data_employee e
+                    WHERE o.order_all_id = od.order_id_id AND o.employee_id = e.employee_id AND o.ask_no =:ask_no """, ({'ask_no':ask_no}))
+            elif mode == 3:
+                cursor.execute(
+                    """
+                    SELECT o.ask_no, o.order_no, company_number_id, get_date, expect_date, deadline, pay_way, deliver_way, note1, deadline, od.product_number_id, 
+                    od.product_amount FROM select_data_order o, select_data_order_detail od, select_data_employee e
+                    WHERE o.order_all_id = od.order_id_id AND o.employee_id = e.employee_id AND o.ask_no =:ask_no """, ({'ask_no':ask_no}))
+            respond = cursor.fetchall()
+        return respond
+    def get_order_no(self):
+        from django.db import connection
         with connection.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT company_number_id, ask_no, pay_way, e.employee_name, ask_date, demand_date, deadline, od.product_number_id, 
-                od.product_amount, note, last_modified FROM select_data_order o, select_data_employee e, select_data_order_detail od
-                WHERE o.employee_id = e.employee_id AND o.order_all_id = od.order_id_id ORDER BY o.last_modified 
-                """
-            )
+                SELECT DISTINCT order_no FROM select_data_order WHERE order_no IS NOT NULL;
+                """)
             respond = cursor.fetchall()
         return respond
-
-    def ask_no_content(self, ask_no):
+    def get_order_content(self, order_no):
         from django.db import connection
-        
         with connection.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT company_number_id, pay_way, deadline, od.product_number_id, 
-                od.product_amount FROM select_data_order o, select_data_order_detail od
-                WHERE o.order_all_id = od.order_id_id AND o.ask_no =:ask_no """, ({'ask_no':ask_no}))
+                SELECT p.product_number, p.product_name, od.product_amount FROM select_data_order o, select_data_order_detail od, select_data_product p
+                WHERE o.order_all_id = od.order_id_id AND od.product_number_id = p.product_number AND o.order_no = :order_no
+                """,({'order_no':order_no}))
             respond = cursor.fetchall()
         return respond
-
-
     def recent_records(self):
         from django.db import connection
         with connection.cursor() as cursor:
@@ -96,18 +150,41 @@ class OrderManager(models.Manager):
         from django.db import connection
         with connection.cursor() as cursor:
             command =  """
-                SELECT o.order_no, o.company_number_id, cust.contactor, cust.site, p.product_name, od.product_amount, o.expect_date, o.deadline, o.finished,
-                o.actual_ship_date, od.product_po, o.invoice_condition, o.note, o.note1 FROM select_data_order o, select_data_order_detail od, select_data_customer cust,
-                select_data_product p WHERE o.order_all_id = od.order_id_id AND o.company_number_id = cust.company_number AND od.product_number_id = p.product_number 
+                SELECT o.order_no, o.company_number_id, cust.site, cust.contactor, o.expect_date, o.deadline, o.actual_ship_date, o.invoice_condition, o.finished,
+                o.note, o.note1,  p.product_name, odp.product_amount, odp.product_po FROM select_data_order o, select_data_order_detail od, select_data_order_detail_po odp,select_data_customer cust,
+                select_data_product p WHERE o.order_all_id = od.order_id_id AND o.company_number_id = cust.company_number AND od.product_number_id = p.product_number AND odp.order_detail_id_id = od.order_detail_id 
                 """ + " AND o.order_no =:order_no"*(kwargs['order_no'] != '') + " AND o.company_number_id =:company_number_id "*(kwargs['company_number_id'] != '') + " AND o.finished =:finished"*(kwargs['finished'] != '') +\
                     " AND o.deadline =:deadline "*(kwargs['deadline'] != '') + " AND o.expect_data =:expect_date "*(kwargs['expect_date'] != '') + " AND ((julianday('now') - julianday(o.deadline)) >=:rest_of_date0) AND (julianday('now') - julianday(o.deadline)) <:rest_of_date1"*(kwargs['rest_of_date0'] != '')
-            # print(command)
-            cursor.execute(
-               command, (kwargs )
-            )
+            cursor.execute(command, (kwargs ))
             respond = cursor.fetchall()
-
         return respond
+    def get_vailable_product_po(self, product_number_id):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            command = """
+            SELECT DISTINCT osd.product_po FROM select_data_order_stock_product osp, select_data_order_stock_detail osd WHERE osp.product_number_id = :product_number_id AND osp.order_stock_product = osd.order_stock_product_id
+            """
+            cursor.execute(command, ({'product_number_id':product_number_id}))
+            respond = cursor.fetchall()
+        return respond
+
+    def update_export_stock_detail(self, **kwargs):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            command = """
+            UPDATE select_data_order_stock_detail SET product_num = product_num - :product_amount WHERE product_po = :product_po
+            """
+            cursor.execute(command, (kwargs))
+
+    def update_export_order_status(self, **kwargs):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            command = """
+            UPDATE select_data_order SET finished = 1, actual_ship_date = :actual_ship_date, invoice_condition = :invoice_condition WHERE order_all_id IN (SELECT DISTINCT order_id_id FROM 
+            (SELECT odp.order_detail_id_id odid, SUM(odp.product_amount) s_amount FROM select_data_order_detail_po odp GROUP BY order_detail_id_id) t1, select_data_order_detail
+            WHERE NOT EXISTS ( SELECT 1 FROM select_data_order_detail od WHERE od.product_amount != t1.s_amount AND od.order_detail_id = t1.odid )  AND order_id_id  = :order_id_id )
+            """
+            cursor.execute(command, (kwargs))
 class InsertManager(models.Manager):
     def recent_records(self):
         from django.db import connection
@@ -127,21 +204,106 @@ class InsertManager(models.Manager):
         return respond
 
 class StockManager(models.Manager):
-    def recent_records(self):
+    def renew_stock_records(self, time_limit):
         from django.db import connection
         with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                SELECT duct.product_name, stock.produced_date, stock.num_rest, CAST((julianday('now') -  julianday(stock.produced_date)) AS Integer) 
-                FROM  select_data_product duct, select_data_stock stock
-                WHERE  duct.product_id = stock.product_id_id 
-                ORDER BY stock.produced_date  DESC
-                """
-            )
+            command = """
+            SELECT os.order_stock_po, os.order_stock_date, os.note, p.product_name, osp.order_num 
+            FROM select_data_order_stock os, select_data_order_stock_product osp, select_data_product p  WHERE 
+            p.product_number = osp.product_number_id AND osp.order_stock_po_id = os.order_stock_po AND (julianday('now') - julianday(os.last_modified)) <= :time_limit
+            """
+            cursor.execute(command, {'time_limit':time_limit})
             respond = cursor.fetchall()
         return respond
 
-
+    def renew_stock_records_detail(self, time_limit):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            command = """
+            SELECT os.order_stock_po, os.order_stock_date, os.note, p.product_name, osd.product_num, osd.product_po, osd.valid_date
+            FROM select_data_order_stock os, select_data_order_stock_detail osd,select_data_order_stock_product osp, select_data_product p  WHERE 
+            p.product_number = osp.product_number_id AND osp.order_stock_po_id = os.order_stock_po AND osd.order_stock_product_id = osp.order_stock_product 
+            AND (julianday('now') - julianday(osd.last_modified)) <= :time_limit
+            """
+            cursor.execute(command, {'time_limit':time_limit})
+            respond = cursor.fetchall()
+        return respond
+    def update_stock_order_status(self, order_stock_po):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            command = """
+            UPDATE select_data_order_stock SET order_stock_status = 1 WHERE order_stock_po in (SELECT order_stock_po FROM (SELECT order_stock_product_id, SUM(product_num) spm FROM select_data_order_stock_detail
+            GROUP BY order_stock_product_id) t, select_data_order_stock WHERE NOT EXISTS (SELECT 1 FROM select_data_order_stock os WHERE os.stock_product = t.order_stock_product AND os.order_num != t.spm) 
+            AND order_stock_po = :order_stock_po)
+            """
+            cursor.execute(command, {'order_stock_po':order_stock_po})
+    def show_stock(self, t1, t2):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            command = """
+            SELECT p.n, IFNULL(td1.spm,0), IFNULL(td2.spm0,0), IFNULL(td4.som1,0) - IFNULL(td1.spm,0) - IFNULL(td2.spm0,0) + IFNULL(td3.som,0) FROM 
+            (SELECT product_name n, product_number p_id FROM select_data_product) p LEFT OUTER JOIN
+            (SELECT od.product_number_id p_id, SUM(product_amount) spm FROM select_data_order o, select_data_order_detail od 
+            WHERE 
+            order_status = 1 
+            AND od.order_id_id = o.order_all_id  
+            AND julianday(o.deadline)-julianday('now')  >= :t1 
+            AND julianday(o.deadline)-julianday('now')  < :t2 
+            GROUP BY od.product_number_id) td1 ON p.p_id = td1.p_id
+            LEFT OUTER JOIN
+            (SELECT od.product_number_id p_id, SUM(product_amount) spm0 FROM select_data_order o, select_data_order_detail od 
+            WHERE 
+            order_status = 0 
+            AND od.order_id_id = o.order_all_id 
+            AND julianday(o.demand_date)-julianday('now') >= :t1 
+            AND julianday(o.demand_date)-julianday('now') < :t2 
+            GROUP BY od.product_number_id) td2 on p.p_id = td2.p_id 
+            LEFT OUTER JOIN
+            (SELECT osp.product_number_id p_id, SUM(osp.order_num) som FROM select_data_order_stock_product osp, select_data_order_stock os 
+            WHERE 
+            os.order_stock_status = 0
+            AND
+            osp.order_stock_po_id = os.order_stock_po 
+            GROUP BY osp.product_number_id) td3 on p.p_id = td3.p_id
+            LEFT OUTER JOIN
+            (SELECT osp.product_number_id p_id, SUM(osp.order_num) som1 FROM select_data_order_stock_product osp, select_data_order_stock os 
+            WHERE 
+            os.order_stock_status = 1
+            AND
+            osp.order_stock_po_id = os.order_stock_po 
+            GROUP BY osp.product_number_id) td4 on p.p_id = td4.p_id
+            """
+            cursor.execute(command, ({'t1':t1,'t2':t2}))
+            result = cursor.fetchall()
+        return result
+    def show_way_actual_invoiceunshipped(self):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            command = """
+            SELECT p.n, IFNULL(t3.som,0), IFNULL(t4.som1,0), IFNULL(t5.spm,0) FROM 
+            (SELECT product_name n, product_number FROM select_data_product) p LEFT OUTER JOIN
+            (SELECT osp.product_number_id p_id, SUM(osp.order_num) som FROM select_data_order_stock_product osp, select_data_order_stock os 
+            WHERE os.order_stock_status = 0 
+            AND
+            osp.order_stock_po_id = os.order_stock_po 
+            GROUP BY osp.product_number_id) t3 on t3.p_id = p.product_number
+            LEFT OUTER JOIN
+            (SELECT osp.product_number_id p_id, SUM(osp.order_num) som1 FROM select_data_order_stock_product osp, select_data_order_stock os 
+            WHERE os.order_stock_status = 1 
+            AND
+            osp.order_stock_po_id = os.order_stock_po 
+            GROUP BY osp.product_number_id) t4 ON t4.p_id = p.product_number
+            LEFT OUTER JOIN
+            (SELECT od.product_number_id p_id, SUM(product_amount) spm FROM select_data_order o, select_data_order_detail od 
+            WHERE order_status = 1 
+            AND 
+            od.order_id_id = o.order_all_id 
+            AND o.invoice_condition = '1' 
+            GROUP BY od.product_number_id) t5 on t5.p_id = p.product_number
+            """
+            cursor.execute(command, )
+            result = cursor.fetchall()
+        return result
 ##### define table
 
 
@@ -182,8 +344,9 @@ class Order_stock(models.Model):
     
     order_stock_date = models.DateField()
     order_stock_po = models.CharField(max_length=50, primary_key=True)
-    order_stock_status = models.IntegerField(default=0) # 0:下單 1:運送中 2:即將到貨 3:已到達 4:部分到貨
+    order_stock_status = models.IntegerField(default=0) # 0:下單 1:已到達 2:部分到貨
     note = models.CharField(max_length=50, null=True)
+    last_modified = models.DateField(auto_now=True)
     objects = models.Manager()
     def __str__(self):
         return "訂貨編號:"+ self.order_stock_po + ", 狀態:"+ str(self.order_stock_status)
@@ -194,6 +357,7 @@ class Order_stock_product(models.Model):
     product_number = models.ForeignKey(Product, on_delete=models.CASCADE)
     order_num = models.IntegerField()
     objects = models.Manager()
+    mymanager = StockManager()
     def __str__(self):
         return "訂貨編號:"+ self.order_stock_po + ", 商品" + self.product_number
 # order source detail
@@ -202,16 +366,16 @@ class Order_stock_detail(models.Model):
     pk: order stock detail
     """
     order_stock_detail_id = models.AutoField(primary_key=True)
-    order_stock_po = models.ForeignKey(Order_stock, on_delete=models.CASCADE)
-    product_number = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order_stock_product = models.ForeignKey(Order_stock_product, on_delete=models.CASCADE)
     product_po = models.CharField(max_length=50)
     valid_date = models.DateField()
     product_num = models.IntegerField()
     note = models.CharField(max_length=50, null=True)
     order_detail_status = models.BooleanField(default=False)
+    last_modified = models.DateField(auto_now=True)
     objects = models.Manager()
     def __str__(self):
-        return "商品批號:" + self.product_po + ", 品名:" + self.product_number + ", 數量" + str(self.product_num) 
+        return "商品批號:" + self.product_po + ", 序號:" + self.order_stock_product + ", 數量" + str(self.product_num) 
 
 # company employee
 class Employee(models.Model):
@@ -249,6 +413,7 @@ class Order(models.Model):
     note1 = models.CharField(max_length=50, null=True)
     invoice_condition = models.BooleanField(default=False)
     actual_ship_date = models.DateField(null=True)
+    order_status = models.IntegerField(default=0) # 0:預期 1:真實 2:完成
     finished = models.BooleanField(default=False)
     employee = models.ForeignKey(Employee, on_delete = models.CASCADE, null=True)
     last_modified = models.DateField(auto_now=True)
@@ -256,8 +421,8 @@ class Order(models.Model):
     mymanager = OrderManager()
 
     def __str__(self):
-        return "流水編號:" +  self.order_all_id + ",訂單狀態:"  + "完成" if self.finished else "未完成"
-
+        return  "流水編號:" + str(self.order_all_id) +',詢價單編號' + (str(self.ask_no) if self.ask_no is not None else "missing") + ",訂單編號"  + (str(self.order_no) if self.order_no is not None else "missing") +",訂單狀態:"  + ("完成" if self.finished else "未完成")
+# order for each product with amount
 class Order_detail(models.Model):
     """
     detail for order
@@ -265,12 +430,23 @@ class Order_detail(models.Model):
     order_detail_id = models.AutoField(primary_key=True)
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     product_number = models.ForeignKey(Product, on_delete=models.CASCADE)
-    product_po = models.CharField(max_length=50, null=50)
     product_amount = models.IntegerField()
     objects = models.Manager()
     record = OrderManager()
     def __str__(self):
-        return "流水編號:" + self.order_id + "," + self.product_number + ":" + self.product_amount
+        return  str(self.order_id) + "," + str(self.product_number) + ":" + str(self.product_amount)
+# detail for which products come from
+class Order_detail_po(models.Model):
+    """
+    detail for order
+    """
+    order_detail_po_id = models.AutoField(primary_key=True)
+    order_detail_id = models.ForeignKey(Order_detail, on_delete=models.CASCADE)
+    product_po = models.CharField(max_length=50)
+    product_amount = models.IntegerField()
+    objects = models.Manager()
+    def __str__(self):
+        return  str(self.order_detail_id) + ":" + str(self.product_amount) + "," + str(self.product_po)
 
 ###### define form
 class ProductForm(ModelForm):

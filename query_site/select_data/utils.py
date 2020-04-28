@@ -4,6 +4,41 @@ import sqlite3
 import os
 import datetime
 
+def custom_table(result, all_name_list, product_name_list = ['product_number_id', 'product_amount']):
+    info_index = 0
+    cum = 0
+    respond = []
+    store_order_id = {}
+    key_ = list(result.keys())
+    n = len(result[key_[1]])
+    for v in result[key_[0]]:
+        info_index += cum
+
+        if v[0] not in store_order_id:
+            tmp = {}
+            cum = 0
+            for k, i in zip(all_name_list, v[1:]):
+                if isinstance(i,datetime.date) or isinstance(i,datetime.datetime):
+                    i = i.strftime("%Y/%m/%d")
+                elif i is None:
+                    i = ""
+                tmp.update({k:i})
+
+            for index in range(info_index, n):
+                if result[key_[1]][index][0] == v[0]:
+                    for ll,l in zip(product_name_list, result[key_[1]][index][1:]):
+                        tmp[ll]=l
+                    
+                    # if cum == 1:
+                    #     for m in all_name_list:
+                    #         tmp.update({m:''})
+                    respond.append(tmp.copy())
+                    cum += 1
+                else:
+                    break
+            store_order_id.update({v[0]:'added'})
+    return respond
+        
 
 def tojson(select_result, name_list):
     n = len(select_result)
@@ -16,7 +51,7 @@ def tojson(select_result, name_list):
             elif v is None:
                 v = ""
             tmp[k] = v
-        result.append(tmp)
+        result.append(tmp.copy())
     return result
 
 

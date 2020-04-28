@@ -26,6 +26,7 @@
         <script type="text/javascript" src="{% static 'select_data/js/third_party/datatable/datatables.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'select_data/js/third_party/jquery/jquery-ui.js' %}"></script>
         <script type="text/javascript" src="{% static 'select_data/js/third_party/jquery/jquery-ui.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'select_data/js/third_party/vue/vue.js' %}"></script>
         <script type="text/javascript" src="{% static 'select_data/js/myjs/myjs.js' %}"></script>
         <link rel="stylesheet" type="text/css" href="{% static 'select_data/css/third_party/bootstrap/bootstrap.min.css' %}">
         <title>Test</title>
@@ -49,6 +50,8 @@
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownorder">
                                 <a class="dropdown-item" href="{% url 'select_data:expect_order' %}">預期訂單</a>
                                 <a class="dropdown-item" href="{% url 'select_data:actual_order' %}">實際訂單</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'select_data:research_order' %}">完成訂單</a>
                             </div> 
                         </li>
                     </li>
@@ -88,17 +91,38 @@
           </nav>
           <div class="content"> 
               <div class="row" style="padding-top: 3rem;">
-                  <div class="col-2">
+                    <div class="col-2">
                     {% block left %}
                     {% endblock %}
-                  </div>
-                  <div class="col-8">
-                      <div class="container">
-                        {% block content %}
-                        {% endblock %}
-                      </div>
-                  </div>
-                  <div class="col-2"></div>
+                    </div>
+                    <div class="col-8">
+                        <div class="container">
+                            {% block content %}
+                            {% endblock %}
+                            <div class="modal fade" tabindex="-1" role="dialog" style="display: none; padding-top: 30px;" aria-hidden="true" aria-labelledby="tile" id="add_success_id">
+                                <div class="modal-dialog" role="document" style="border-color: black; border-width: 2px;">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background:rgb(203, 203, 236) ; border-color: black;">
+                                            <h3 class="modal-title">
+                                                <span class="badge badge-primary"> Info </span>
+                                            </h3>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="close_modal()">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" style="background-color: #c5dbdf; border-color: #8ba0b6; border-width: 5px;">
+                                            <p style="font-weight: bolder;font-size: 20px; color:deepskyblue(138, 68, 68);">修改成功<br><br>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id='warning-info'>
+                            </div>       
+                        </div>
+                    </div>
+                  
+                    <div class="col-2"></div>
               </div> 
           </div> 
     </body>

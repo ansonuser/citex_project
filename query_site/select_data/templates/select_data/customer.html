@@ -207,6 +207,7 @@
 <script defer>
        $(document).ready(function(){
         var table = $('#mytable1').DataTable({
+            language:chinese,
             "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
             "fnDrawCallback": function(){
                 $("[name='delete']").click(function(){

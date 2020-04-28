@@ -3,89 +3,138 @@
 <div class="card" style="margin-top:1rem">
     <div class="card-body">
         <label for="rest_num">交期區間</label>
-        <input type="number" class="form-control" name="rest_num" id="rest_num1" min="0">
-        <br>
-        <input type="number" class="form-control" name="rest_num" id="rest_num2" min="1">
+        <input type="number" class="form-control" name="t1" min="0" placeholder="0" required='required'>
+        <input type="number" class="form-control" name="t2" min="1" placeholder="15"  required='required'>
     </div>
     <div class="card-footer">
         <div class="pull-right">
-            <button class="btn-secondary btn">選擇</button>
+            <button class="btn-secondary btn" name='search'>選擇</button>
         </div>
     </div>
 </div>
 {% endblock %}
 {% block content %}
-<script>
-    $(".active").removeClass("active");
-    $("#stock_bar").addClass("active");
-</script>
-<div class="container">
+
+
+
     <div class="card">
         <div class="card-body">
             <div class="row" style="padding-top: 30px;">
-                <div class="col-md-7">
-                    <table class="table">
-                        <thread>
-                            <th scope="col">&nbsp;</th>
-                            <th scope="col">交期區間</th>
-                            <th scope="col">實際庫存</th>
-                            <th scope="col">在途庫存</th>
-                            <th scope="col">實際訂單</th>
-                            <th scope="col">預期訂單</th>
-                            <th scope="col">預期庫存</th>
-                        </thread>
+                <div class="col-md-7 table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table table-bordered table-striped mb-0" style="border-collapse: collapse;" id='show_stock'>
+                        <thead class='thead-dark'>
+                            <tr>
+                                <th scope="col" v-for='col in columns'>
+                                    [[col]]
+                                </th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            <tr>
-                                <th colspan="1" scope="colgroup"> 商品一號</th>
-                                <td>2</td>
-                                <td>3</td>
-                                <td>4</td>
-                                <td>5</td>
-                                <td>6</td>
-                                <td>6</td>
-                            </tr>
-                            <tr>
-                                <td></th>
-                                <td>2</td>
-                                <td>3</td>
-                                <td>4</td>
-                                <td>5</td>
-                                <td>6</td>
-                                <td>6</td>
-                            </tr>
-                            <tr>
-                                <th colspan="1" scope="colgroup"> 商品一號</th>
-                                <td>2</td>
-                                <td>3</td>
-                                <td>4</td>
-                                <td>5</td>
-                                <td>6</td>
-                                <td>6</td>
+                            <tr v-for='row in tableData'>
+                                <td v-for='element in row'>
+                                    [[fillzero(element)]]
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="col-md-1"></div>
      
-                <div class="col-md-4">
-                    <table class="table">
-                        <thread>
-                            <th scope="col">商品名稱</th>
-                            <th scope="col">已開發票未出貨數量</th>
-                        </thread>
-                        <tbody>
+                <div class="col-md-4 table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table table-bordered table-striped mb-0" style="border-collapse: collapse;" id='show_other'>
+                        <thead class='thead-light'>
                             <tr>
-                                <td>1</td>
-                                <td>2</td>
+                                <th scope="col" v-for='col in columns'>
+                                    [[col]]
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for='row in tableData'>
+                                <td v-for='element in row'>
+                                    [[fillzero(element)]]
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>  
-            <!-- <div class="pull-right" style="padding-top:30px;">
-                <button type="button" class="btn btn-secondary"> 關閉</button>
-            </div> -->
         </div>
     </div>
-</div>
+
+<script>
+
+    var show_stock = new Vue({
+        delimiters: ['[[',']]'],
+        el:'#show_stock',
+        data:{
+            columns:['商品名稱','實際訂單', '預期訂單', '預期庫存'],
+            tableData:[]
+        },
+        methods:{
+            fillzero: function(value){
+                return value==null?0:value
+            }
+        }
+    });
+
+    var show_other = new Vue({
+        delimiters: ['[[', ']]'],
+        el:"#show_other",
+        data:{
+            columns : ['商品名稱','在途庫存','實際庫存','已開發票未出貨'],
+            tableData : [],
+        },
+        methods:{
+            fillzero: function(value){
+                return value==null?0:value
+            }
+        }
+    })
+    function show_stock_change(t1, t2){
+        $.ajax({
+            url:"{% url 'select_data:gettable'%}",
+            data:{'data':'get_show_stock',
+                 't1':t1,
+                 't2':t2},
+            type:'POST',
+            success: function(x){
+                show_stock.tableData = x['form']
+            }
+        })
+    }
+    function show_stock_detail(){
+        $.ajax({
+            url:"{% url 'select_data:gettable'%}",
+            data:{'data':'get_invoice_and_stock'},
+            type:'POST',
+            success:function(x){
+                show_other.tableData = x['form'];
+            }
+        })
+    }
+
+    $(document).ready(function(){
+        $(".active").removeClass("active");
+        $("#stock_bar").addClass("active");
+        $("a[href='/select_data/record_search/']").addClass("active");
+        show_stock_detail();
+        show_stock_change(0, 15);
+        $('[name="search"]').on('click', function(){
+            if(required_all()){
+                var t1 = $('[name="t1"]').val();
+                var t2 = $('[name="t2"]').val();
+                show_stock_change(t1, t2);
+            }
+        })
+
+    })
+
+//     <th scope="col">&nbsp;</th>
+// <th scope="col">在途庫存</th>　<!--已經向國外訂貨-->
+// <th scope="col">實際訂單</th>　<!--依照交期計算所有訂單編號需要的數量［期限時間］-->
+// <th scope="col">預期訂單</th>　<!--依照交期計算所有詢價編號需要的數量［需求時間］-->
+// <th scope="col">預期庫存</th>　<!--實際庫存－預期訂單－實際訂單＋在途-->
+</script>
 {% endblock %}
+

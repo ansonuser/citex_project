@@ -169,6 +169,7 @@
 <script defer>
        $(document).ready(function(){
         var table = $('#mytable1').DataTable({
+            language:chinese,
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
             "fnDrawCallback": function(){
                 $(".active").removeClass("active");
