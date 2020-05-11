@@ -3,9 +3,9 @@
 
 <div class="card" style="margin-top:1rem">
     <div class="card-body">
-        <label for="ask_order_no">詢價編號</label>
-        <input type="text" class="form-control" name="ask_order_no" list="ask_order_no" >
-        <datalist id="ask_order_no">
+        <label for="ask_no">詢價編號</label>
+        <input type="text" class="form-control" name="ask_no" list="ask_no" >
+        <datalist id="ask_no">
         </datalist>
     </div>
     <div class="card-footer">
@@ -38,15 +38,15 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label for="company">公司</label>
-                        <input type="text"class="form-control" id="company" disabled='disabled'>
+                        <input type="text"class="form-control" disabled='disabled'>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="site">廠區</label>
-                        <input type="text" class="form-control" id="site" disabled='disabled'>
+                        <input type="text" class="form-control" disabled='disabled'>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="contact_window">聯絡人</label>
-                        <input type="text" class="form-control" id="contact_window" disabled='disabled'>
+                        <input type="text" class="form-control" disabled='disabled'>
                     </div>
                 </div>
 
@@ -68,7 +68,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="pay_way">付款方式</label>
-                        <input type="text" class="form-control" name="pay_way">
+                        <input type="text" class="form-control" name="pay_way" required='required'>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="deliver_way">運送方式</label>
@@ -120,65 +120,29 @@
         </div>
     </div>
 
-
-
-
-<div class="card" style="margin-top:3rem;">
-    <div class="card-header" style="background-color:white;">
-        <h2> <span class="badge badge-secondary">歷史紀錄</span></h2>
-    </div>
-    <div class="card-body" style="border-style: hidden; overflow-x:auto; ">
-        <div class="row" style="text-align: center; margin-bottom: .5rem;">
-            <label style="float:right; margin-bottom: .5rem;vertical-align: middle;">
-                修改時間為
-                <select name="select_time_limit">
-                    <option value="30">30</option>
-                    <option value="60">60</option>
-                    <option value="90">90</option>
-                    <option value="180">180</option>
-                    <option value="All"> All</option>
-                </select>
-                天內
-            </label>
-        </div>
-        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-            <table class="table table-bordered table-striped mb-0" style="border-collapse: collapse;" id='actual_order_table'>
-                <thead class='thead-dark'>
-                    <tr>
-                        <th scope="col" v-for='col in columns'>
-                            [[col]]
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for='row in tableData'>
-                        <td v-for='element in row'>
-                            [[element]]
-                        </td>
-                        <td style='white-space: nowrap'>
-                            <div class="btn-group mr-2" role="group">
-                                <button class="btn btn-secondary" type="button" name="edit"  data-toggle="modal" data-target="#modified_table" onclick="feedinput(this)">編輯</button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
+{% endblock %}
+{% block card %}
 
 <script>
+    function feedinput(val){
+        return feedinput_abc(null, 'order_no_content_all', '#insert_form', custom_tree, "{% url 'select_data:gettable'%}", val)
+    }
 
+    var table_vue = create_vue( [
+                    { key: 'order_no', label: '訂單編號', sortable: true, class: 'text-center' },
+                    { key: 'ask_no', label: '詢價編號', sortable: true, class: 'text-center' },
+                    { key: 'company_number_id', label: '客戶編號', sortable: true, class: 'text-center' },
+                    { key: 'get_date', label:'接單時機', sortable:true,  class: 'text-center'},
+                    { key: 'expect_date', label:'預計時間' ,sortable: true, class: 'text-center'},
+                    { key: 'deadline', label:'交貨期限' ,sortable: true, class: 'text-center'},
+                    { key: 'pay_way', label: '付款方式',sortable: true, class: 'text-center' },
+                    { key: 'deliver_way', label: '運送方式', sortable:true,  class: 'text-center' },
+                    { key: 'note1', label:'備註2' ,sortable: true, class: 'text-center'},
+                    { key: 'product_name', label:'商品名稱' ,sortable: true, class: 'text-center'},
+                    { key: 'product_amount', label:'商品數量' ,sortable: true, class: 'text-center'},
+                    { key: 'actions', label:''}
+                ], 'order_no', feedinput)
 
-    var table_vue = new Vue({
-        delimiters: ['[[', ']]'],
-        el:"#actual_order_table",
-        data:{
-            columns : ['詢價編號','訂單編號','客戶編號','接單時機','預計時間','交貨期限','付款方式','運送方式','備註2','商品編號','商品數量', ''],
-            tableData : [],
-        }
-    })
     function custom_tree(e){
         custom_tree_url(e, "{% url 'select_data:gettable'%}")
     }
@@ -187,21 +151,14 @@
         product_tree_url(e, "{% url 'select_data:gettable'%}")
     }
 
-    function renewtable(){
-        var time_input = $('select[name="select_time_limit"]').val();
-        $.ajax({
-            url:"{% url 'select_data:gettable'%}",
-            data:{'data':'renew_actual_order',
-                  'limit': time_input},
-            type:'POST',
-            success:function(x){
-                table_vue.tableData = x['form'];
-            }
-        })
-    }  
+    function renewtable_for_this_page(){
+        renewtable('renew_actual_order', 
+        [ "order_no","ask_no", "company_number_id",'get_date','expect_date','deadline','pay_way', 'deliver_way',"note1", 'product_name', 'product_amount'], 
+        "{% url 'select_data:gettable'%}")
+    }
     
     function drawcontent(){
-        var a = $("input[list=ask_order_no]").val();
+        var a = $("input[list=ask_no]").val();
         $.ajax({
             url:"{% url 'select_data:gettable'%}",
             type:"POST",
@@ -240,15 +197,13 @@
     
     function add_actual(){
         if(check_submit()){
-            var ask_no = $("input[name='ask_order_no']").val();
-            var form = $("#insert_form").serialize() + "&ask_no="+ask_no;
+            var ask_no = $("input[name='ask_no']").val();
+            var form = $("#insert_form").serialize() +"&ask_no="+ask_no;
             $.ajax({
                 url:"{% url 'select_data:update_actual_order'%}",
                 type:"POST",
-                async:true,
                 data: form,
                 success: function(data){
-
                     $("#add_success_id").attr({"class":"modal fade show"}).attr({"style":"display:block; padding-top:30px;"});
                     setTimeout(function(){
                         location.reload();
@@ -260,15 +215,20 @@
         }
     }
 
+    function modified_table(int){
+        return modified_table_abc(int,  "{% url 'select_data:update_actual_order'%}")
+    }
     
     $(document).ready(function(){
-        $('select[name="select_time_limit"]').change(renewtable)  
-        renewtable();
+        $("#buttomcard").removeAttr('hidden');
+        $('select[name="select_time_limit"]').change(renewtable_for_this_page)  
+        renewtable_for_this_page();
         ask_noing( "{% url 'select_data:gettable'%}");
         companying( "{% url 'select_data:gettable'%}");
         producting( "{% url 'select_data:gettable'%}");
     
-        $(".active").removeClass("active");
+        $("ul.navbar-nav").find('li.active').removeClass("active");
+        $("a").removeClass("active");
         $("#order_bar").addClass("active");
         $("a[href='/select_data/actual_order/']").addClass("active");
 

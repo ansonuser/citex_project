@@ -4,7 +4,7 @@ import sqlite3
 import os
 import datetime
 
-def custom_table(result, all_name_list, product_name_list = ['product_number_id', 'product_amount']):
+def custom_table(result, all_name_list, product_name_list = ['product_name', 'product_amount']):
     info_index = 0
     cum = 0
     respond = []

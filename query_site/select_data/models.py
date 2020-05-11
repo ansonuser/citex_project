@@ -38,33 +38,57 @@ class OrderManager(models.Manager):
             with connection.cursor() as cursor:
                 cursor.execute(
                     """
-                    SELECT DISTINCT o.order_all_id, ask_no, company_number_id, pay_way, e.employee_name, ask_date, demand_date, deadline, note FROM select_data_order o, select_data_employee e
-                    WHERE o.employee_id = e.employee_id AND ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
+                    SELECT DISTINCT ask_no, company_number_id, pay_way, e.employee_name, ask_date, demand_date, deadline, note, p.product_name, od.product_amount
+                    FROM 
+                    select_data_order o, select_data_employee e, select_data_order_detail od, select_data_product p
+                    WHERE 
+                    o.employee_id = e.employee_id 
+                    AND 
+                    o.order_all_id = od.order_id_id  
+                    AND
+                    od.product_number_id = p.product_number
+                    AND
+                    ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
                     """,({'time_limit':time_limit}))
-                respond.update({'ask_no_info':cursor.fetchall()})
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    """
-                    SELECT od.order_id_id, od.product_number_id, od.product_amount FROM select_data_order o, select_data_order_detail od
-                    WHERE o.order_all_id = od.order_id_id  AND ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
-                    """,({'time_limit':time_limit}))
-                respond.update({'ask_no_product_info':cursor.fetchall()})
+                return cursor.fetchall()
+            #     respond.update({'ask_no_info':cursor.fetchall()})
+            # with connection.cursor() as cursor:
+            #     cursor.execute(
+            #         """
+            #         SELECT od.order_id_id, p.product_name, od.product_amount FROM select_data_order o, select_data_order_detail od, select_data_product p
+            #         WHERE o.order_all_id = od.order_id_id  
+            #         AND
+            #         od.product_number_id = p.product_number
+            #         AND 
+            #         ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
+            #         """,({'time_limit':time_limit}))
+            #     respond.update({'ask_no_product_info':cursor.fetchall()})
 
         elif mode == 2:
             with connection.cursor() as cursor:
                 cursor.execute(
                     """
-                    SELECT DISTINCT o.order_all_id, o.ask_no, o.order_no, company_number_id, get_date, expect_date, deadline, pay_way, deliver_way, note1 FROM select_data_order o, select_data_employee e
-                    WHERE  ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
+                    SELECT DISTINCT o.order_no, o.ask_no, company_number_id, get_date, expect_date, deadline, pay_way, deliver_way, note1, p.product_name, od.product_amount
+                    FROM select_data_order o, select_data_order_detail od, select_data_product p
+                    WHERE  
+                    o.order_all_id = od.order_id_id
+                    AND
+                    p.product_number = od.product_number_id
+                    AND
+                    o.order_no IS NOT NULL
+                    AND
+                    ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
                     """,({'time_limit':time_limit}))
-                respond.update({'order_no_info':cursor.fetchall()})
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    """
-                    SELECT od.order_id_id,  od.product_number_id, od.product_amount FROM select_data_order o, select_data_order_detail od
-                    WHERE o.order_all_id = od.order_id_id  AND ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
-                    """,({'time_limit':time_limit}))
-                respond.update({'order_no_product_info':cursor.fetchall()})            
+
+                return cursor.fetchall()
+            #     respond.update({'order_no_info':cursor.fetchall()})
+            # with connection.cursor() as cursor:
+            #     cursor.execute(
+            #         """
+            #         SELECT od.order_id_id,  od.product_number_id, od.product_amount FROM select_data_order o, select_data_order_detail od
+            #         WHERE o.order_all_id = od.order_id_id  AND ((julianday('now') - julianday(o.last_modified)) <= :time_limit) ORDER BY o.order_all_id
+            #         """,({'time_limit':time_limit}))
+            #     respond.update({'order_no_product_info':cursor.fetchall()})            
         return respond
 
     def ask_no_content(self, ask_no, mode = 1):
@@ -92,6 +116,39 @@ class OrderManager(models.Manager):
                     SELECT o.ask_no, o.order_no, company_number_id, get_date, expect_date, deadline, pay_way, deliver_way, note1, deadline, od.product_number_id, 
                     od.product_amount FROM select_data_order o, select_data_order_detail od, select_data_employee e
                     WHERE o.order_all_id = od.order_id_id AND o.employee_id = e.employee_id AND o.ask_no =:ask_no """, ({'ask_no':ask_no}))
+            respond = cursor.fetchall()
+        return respond
+    def order_no_content(self, order_no, mode = 1):
+        """
+        mode: 1, for modification of actual order
+        """
+        from django.db import connection
+        with connection.cursor() as cursor:
+            if mode == 1:
+                cursor.execute(
+                    """
+                    SELECT company_number_id, get_date, expect_date, deadline, 
+                    pay_way, deliver_way, invoice_condition, o.note1, od.product_number_id, od.product_amount 
+                    FROM 
+                    select_data_order o, select_data_order_detail od
+                    WHERE 
+                    o.order_all_id = od.order_id_id 
+                    AND 
+                    o.order_no = :order_no 
+                    """, ({'order_no':order_no}))
+                return cursor.fetchall()
+            # elif mode == 2:
+            #     cursor.execute(
+            #         """
+            #         SELECT company_number_id, pay_way, e.employee_name ||'-' || cast(e.employee_id as text), note, ask_date, demand_date, deadline, od.product_number_id, 
+            #         od.product_amount FROM select_data_order o, select_data_order_detail od, select_data_employee e
+            #         WHERE o.order_all_id = od.order_id_id AND o.employee_id = e.employee_id AND o.ask_no =:ask_no """, ({'order_no':order_no}))
+            # elif mode == 3:
+            #     cursor.execute(
+            #         """
+            #         SELECT o.ask_no, o.order_no, company_number_id, get_date, expect_date, deadline, pay_way, deliver_way, note1, deadline, od.product_number_id, 
+            #         od.product_amount FROM select_data_order o, select_data_order_detail od, select_data_employee e
+            #         WHERE o.order_all_id = od.order_id_id AND o.employee_id = e.employee_id AND o.ask_no =:ask_no """, ({'order_no':order_no}))
             respond = cursor.fetchall()
         return respond
     def get_order_no(self):
@@ -148,16 +205,41 @@ class OrderManager(models.Manager):
         return respond
     def get_actual_detail(self, **kwargs):
         from django.db import connection
+        respond = {}
         with connection.cursor() as cursor:
-            command =  """
-                SELECT o.order_no, o.company_number_id, cust.site, cust.contactor, o.expect_date, o.deadline, o.actual_ship_date, o.invoice_condition, o.finished,
-                o.note, o.note1,  p.product_name, odp.product_amount, odp.product_po FROM select_data_order o, select_data_order_detail od, select_data_order_detail_po odp,select_data_customer cust,
-                select_data_product p WHERE o.order_all_id = od.order_id_id AND o.company_number_id = cust.company_number AND od.product_number_id = p.product_number AND odp.order_detail_id_id = od.order_detail_id 
-                """ + " AND o.order_no =:order_no"*(kwargs['order_no'] != '') + " AND o.company_number_id =:company_number_id "*(kwargs['company_number_id'] != '') + " AND o.finished =:finished"*(kwargs['finished'] != '') +\
-                    " AND o.deadline =:deadline "*(kwargs['deadline'] != '') + " AND o.expect_data =:expect_date "*(kwargs['expect_date'] != '') + " AND ((julianday('now') - julianday(o.deadline)) >=:rest_of_date0) AND (julianday('now') - julianday(o.deadline)) <:rest_of_date1"*(kwargs['rest_of_date0'] != '')
-            cursor.execute(command, (kwargs ))
-            respond = cursor.fetchall()
-        return respond
+            if (kwargs['finished'] == '1') or (kwargs['finished'] == ''):
+                command =  """
+                    SELECT o.order_no, o.company_number_id, cust.site, cust.contactor, o.expect_date, o.deadline, o.actual_ship_date, o.invoice_condition, o.finished,
+                    o.note, o.note1,  p.product_name, odp.product_amount, odp.product_po FROM select_data_order o, select_data_order_detail od, select_data_order_detail_po odp, select_data_customer cust,
+                    select_data_product p 
+                    WHERE o.order_all_id = od.order_id_id AND o.company_number_id = cust.company_number AND od.product_number_id = p.product_number 
+                    """ + " AND o.order_no =:order_no"*(kwargs['order_no'] != '') +\
+                    " AND o.company_number_id =:company_number_id "*(kwargs['company_number_id'] != '') +\
+                    " AND EXISTS (SELECT 1 FROM select_data_order_detail_po odp WHERE odp.order_detail_id_id = od.order_detail_id)" +\
+                    " AND o.deadline =:deadline "*(kwargs['deadline'] != '') +\
+                    " AND o.expect_data =:expect_date "*(kwargs['expect_date'] != '') +\
+                    " AND ((julianday('now') - julianday(o.deadline)) >=:rest_of_date0) AND (julianday('now') - julianday(o.deadline)) <:rest_of_date1"*(kwargs['rest_of_date0'] != '')
+                cursor.execute(command, (kwargs ))
+                respond['1'] = cursor.fetchall()
+        with connection.cursor() as cursor:
+            if  (kwargs['finished'] == '0') or (kwargs['finished'] == ''):
+                command =  """
+                    SELECT o.order_no, o.company_number_id, cust.site, cust.contactor, o.expect_date, o.deadline, o.actual_ship_date, o.invoice_condition, o.finished,
+                    o.note, o.note1,  p.product_name, od.product_amount, NULL FROM select_data_order o, select_data_order_detail od, select_data_customer cust,
+                    select_data_product p 
+                    WHERE o.order_all_id = od.order_id_id AND o.company_number_id = cust.company_number AND od.product_number_id = p.product_number 
+                    """ + " AND o.order_no =:order_no"*(kwargs['order_no'] != '') +\
+                    " AND o.company_number_id =:company_number_id "*(kwargs['company_number_id'] != '') +\
+                    " AND NOT EXISTS (SELECT 1 FROM select_data_order_detail_po odp WHERE odp.order_detail_id_id = od.order_detail_id)" +\
+                    " AND o.deadline =:deadline "*(kwargs['deadline'] != '') +\
+                    " AND o.expect_data =:expect_date "*(kwargs['expect_date'] != '') +\
+                    " AND ((julianday('now') - julianday(o.deadline)) >=:rest_of_date0) AND (julianday('now') - julianday(o.deadline)) <:rest_of_date1"*(kwargs['rest_of_date0'] != '')
+                cursor.execute(command, (kwargs ))
+                respond['0'] = cursor.fetchall()
+        result = []
+        for v in respond.values():
+            result.extend(v)
+        return result
     def get_vailable_product_po(self, product_number_id):
         from django.db import connection
         with connection.cursor() as cursor:
@@ -204,6 +286,36 @@ class InsertManager(models.Manager):
         return respond
 
 class StockManager(models.Manager):
+    def stock_content_detail(self, stock_po):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            command = """
+            SELECT product_number_id, product_po, valid_date, product_num, sd.note FROM select_data_order_stock_product sp, select_data_order_stock_detail sd, select_data_order_stock os
+            WHERE
+            os.order_stock_po = sp.order_stock_po_id 
+            AND
+            sp.order_stock_product = sd.order_stock_product_id
+            AND
+            os.order_stock_po = :stock_po
+            """
+            cursor.execute(command, {'stock_po':stock_po})
+            respond = cursor.fetchall()
+        return respond
+            
+    def stock_content(self, stock_po):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            command = """
+           SELECT order_stock_date, os.note,  product_number_id, order_num FROM select_data_order_stock os, select_data_order_stock_product sp 
+           WHERE 
+           os.order_stock_po = sp.order_stock_po_id
+           AND
+           os.order_stock_po = :stock_po
+            """
+            cursor.execute(command, {'stock_po':stock_po})
+            respond = cursor.fetchall()
+        return respond
+
     def renew_stock_records(self, time_limit):
         from django.db import connection
         with connection.cursor() as cursor:
@@ -220,7 +332,7 @@ class StockManager(models.Manager):
         from django.db import connection
         with connection.cursor() as cursor:
             command = """
-            SELECT os.order_stock_po, os.order_stock_date, os.note, p.product_name, osd.product_num, osd.product_po, osd.valid_date
+            SELECT os.order_stock_po, os.order_stock_date, osd.note, p.product_name, osd.product_num, osd.product_po, osd.valid_date
             FROM select_data_order_stock os, select_data_order_stock_detail osd,select_data_order_stock_product osp, select_data_product p  WHERE 
             p.product_number = osp.product_number_id AND osp.order_stock_po_id = os.order_stock_po AND osd.order_stock_product_id = osp.order_stock_product 
             AND (julianday('now') - julianday(osd.last_modified)) <= :time_limit
@@ -232,8 +344,12 @@ class StockManager(models.Manager):
         from django.db import connection
         with connection.cursor() as cursor:
             command = """
-            UPDATE select_data_order_stock SET order_stock_status = 1 WHERE order_stock_po in (SELECT order_stock_po FROM (SELECT order_stock_product_id, SUM(product_num) spm FROM select_data_order_stock_detail
-            GROUP BY order_stock_product_id) t, select_data_order_stock WHERE NOT EXISTS (SELECT 1 FROM select_data_order_stock os WHERE os.stock_product = t.order_stock_product AND os.order_num != t.spm) 
+            UPDATE select_data_order_stock SET order_stock_status = 1 WHERE order_stock_po in (SELECT order_stock_po_id FROM (SELECT order_stock_po_id, product_number_id pid, SUM(product_num) spm 
+            FROM select_data_order_stock_detail osd, select_data_order_stock_product osp
+            WHERE
+            osp.order_stock_product = osd.order_stock_product_id
+            GROUP BY product_number_id) t 
+            WHERE NOT EXISTS (SELECT 1 FROM select_data_order_stock_product osp WHERE osp.product_number_id = t.pid AND osp.order_num != t.spm) 
             AND order_stock_po = :order_stock_po)
             """
             cursor.execute(command, {'order_stock_po':order_stock_po})
@@ -356,6 +472,7 @@ class Order_stock_product(models.Model):
     order_stock_po = models.ForeignKey(Order_stock, on_delete=models.CASCADE)
     product_number = models.ForeignKey(Product, on_delete=models.CASCADE)
     order_num = models.IntegerField()
+    note = models.CharField(max_length=50, null=True)
     objects = models.Manager()
     mymanager = StockManager()
     def __str__(self):
@@ -385,8 +502,9 @@ class Employee(models.Model):
     employee_id = models.AutoField(primary_key=True)
     employee_name = models.CharField(max_length=50)
     employee_position  = models.CharField(max_length=50)
-    employee_state = models.CharField(max_length=10)
-    start_time = models.DateField()
+    employee_state = models.CharField(max_length=10, default=0)
+    password = models.CharField(max_length=50, null=True)
+    start_time = models.DateField(null=True)
     each_name = OrderManager().select_employee()
     objects = models.Manager()
     def __str__(self):

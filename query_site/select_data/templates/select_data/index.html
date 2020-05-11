@@ -2,42 +2,144 @@
 {% block left %}
 {% endblock %}
 {% block content %}
-    <script>
-        function assure()
-        {
-            let name = document.querySelector('#account').value;
-            if (name === ''){
-                alert('Account is required');
-                document.querySelector('#result').innerHTML = 'Login Failed!'
-            }else{
-                document.location.href='record/';
-                alert('Welcome, ' + name + '!');
-            }
-        }
-    </script>
- 
+{% endblock %}
+{% block card %}
 
     <div class="card">
         <div class="card-title">
-            <h1 class='center' id = "result">Login Page</h1>
         </div>
-        <div class="card-body">
-            <form class='form' onsubmit="assure(); return false;">
-                <div class="form-group">
-                    <label for="account" class="col-sm-4 col-xs-4" style="text-align:right">Account:</label>
-                    <input type="text" class="col-sm-8 col-xs-8 form-control" id="account" name="account" placeholder="帳號">
+        <div class="row">
+            <div class='col-md-3 col-xs-3'></div>
+            <div class="col-md-6 col-xs-6">
+                <div>
+                    <table class="table">
+                        <thead>
+                            <tr class='noBorder'>
+                                <th>&nbsp;</th>
+                                <th role='row' colspan=2 style="font-size: 30px; margin:0 auto">請登入</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class='noBorder'>
+                                <td>帳號:</td>
+                                <td>
+                                    <input class='form-row' type="text" name='account' style="margin-left: -2rem;" list='employee_id' required='required'>
+                                    <datalist id="employee_id">
+                                    </datalist>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr class='noBorder'>
+                                <td>密碼:</td>
+                                <td><input class='form-row' type="password" name='password' style="margin-left: -2rem;" required='required'></td>
+                                <td></td>
+                            </tr>
+                            <tr class='noBorder' style="padding-top: 1rem;">
+                                <td>&nbsp;</td>        
+                                <td class='btn-toolbar' role='toolbar' style="padding-left: 3rem;"> 
+                                    <div class="btn-group mr-2" role="group">
+                                        <button name='apply' type="button" onclick="assure(0)"> 申請 </button>
+                                    </div>
+                                    <div class="btn-group mr-2" role="group">
+                                        <button name='login' type="button" onclick="assure(1)"> 登入 </button>
+                                    </div>
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </tbody>
+                        
+                    </table>
                 </div>
-                <div class="form-group">
-                    <label for="password" class="col-sm-4 col-xs-4"  style="text-align:right">Password:</label>
-                    <input type="password"  class="col-sm-8 col-xs-8 form-control" id="password-field" name="password" placeholder="密碼">
-                </div>
-                <div  style="text-align:right; margin: 0 auto; width:100%">
-                    <button type="submit"> Login </button>
-                </div>
-            </form>
+            </div>
+
+          
+            <div class='col-md-3 col-xs-3'></div>
         </div>
     </div>
     
+    <style>
+        thead tr th{
+            background-color: white;
+            color:black;
+        }
+        tr.noBorder td, tr.noBorder th {
+        border: 0;
+        }
+    </style>
+    <script>
+        $("#menu_bar").attr('hidden','hidden')
+       
+        // $('li').attr('hidden')
+    </script>
+
+
+
+<script>
+    $(document).ready(function(){
+        employeeing("{% url 'select_data:gettable'%}");
+    })
+
+    function assure(int)
+    {
+        if($("#warning_id").length != 0){
+            $('#warning_id').remove();
+        }
+        let name = $("input[name='account']").val();
+        let pwd = $("input[name='password']").val();
+        if(name=='' | pwd==''){
+            var message = warning_info_function('Warning','請輸入帳號密碼', '"badge badge-warning"');
+            $("#warning-info").append(message);
+            $("[data-target='#warning_id']").click();
+            return false;
+        }else{
+            var bool = $("#employee_id").find("option").filter(function(){
+                                            if(name==this.value){
+                                              return true;
+                                            }else{
+                                              return false;
+                                            }})             
+            if(bool.length == 0){
+                var message = warning_info_function('Warning','請輸入正確帳號', '"badge badge-warning"');
+                $("#warning-info").append(message);
+                $("[data-target='#warning_id']").click();
+                return false;
+            }
+        }
+        $.ajax({
+            url:'{% url "select_data:login"%}',
+            data:{
+                'usr':name,
+                'pwd':pwd,
+                'mode':int,
+                },
+            type:'POST',
+            success: function(x){
+                if (x['result'] == 'success'){
+                    if(int == 1){
+                        $("[name='login']").on('click', function() {$("#menu_bar").removeAttr('hidden')});
+                        location.href ="{% url 'select_data:record_research' %}";
+                        return true;
+                    }else{                
+                        var message = warning_info_function('Success','申請成功，請登入', '"badge badge-success"');
+                        $("#warning-info").append(message);
+                        $("[data-target='#warning_id']").click();
+                        return false;
+                    }
+                }else{
+                    if(int == 1){
+                        var message = warning_info_function('Warning','密碼有誤，請重新登入', '"badge badge-warning"');
+                    }else{
+                        var message = warning_info_function('Warning','已申請過帳戶，請重新登入', '"badge badge-warning"');
+                    }
+                        $("#warning-info").append(message);
+                        $("[data-target='#warning_id']").click();
+                        return false;
+                }
+                
+            }
+        })
+    }
+</script>
 {% endblock %}
 
 <!-- action = "record/"  -->

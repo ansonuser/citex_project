@@ -5,24 +5,24 @@
 
     <div class="card">
         <div class="card-body">
-
-
             <form method="post" class="pull-left col-md-12" id="stock_form">{% csrf_token %}
-                
                 <div class="form-row ">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label for="order_stock_po" >庫存訂單編號</label>
                         <input type="text" class="form-control" name="order_stock_po" required='required'>
                     </div>
-                    <div class="form-group col-md-4">
+                </div> 
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
                         <label for="order_stock_date" >庫存訂貨日期</label>
                         <input type="date" name="order_stock_date" class="form-control" required='required'>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label for="note">備註</label>
                         <input type="text" class="form-control" name="note">
                     </div>
-                </div> 
+                </div>
 
                 <div name="product_form">
                     <div class="form-row" name="growth_row">
@@ -33,7 +33,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="product_name">商品名稱</label>
-                            <input type="text" class="form-control" id="product_name" disabled="disabled" >
+                            <input type="text" class="form-control" disabled="disabled" >
                         </div>
                         <div class="form-group col-md-4">
                             <label for="order_num0">訂貨數量</label>
@@ -59,149 +59,54 @@
             </form>
         </div>
     </div>
-
-    <div class="card" style="margin-top:3rem;">
-        <div class="card-header" style="background-color:white;">
-            <h2> <span class="badge badge-secondary">歷史紀錄</span></h2>
-        </div>
-        <div class="card-body">
-            <div class="row" style="text-align: center; margin-bottom: .5rem;">
-                <label style="float:right; margin-bottom: .5rem;vertical-align: middle;">
-                    修改時間為
-                    <select name="select_time_limit">
-                        <option value="30">30</option>
-                        <option value="60">60</option>
-                        <option value="90">90</option>
-                        <option value="180">180</option>
-                        <option value="All"> All</option>
-                    </select>
-                    天內
-                </label>
-            </div>
-            <div class='col-md-12'>
-                <div class="row table-wrapper-scroll-y my-custom-scrollbar" style="margin-top: 2rem;">
-                    <table class="table table-bordered table-striped mb-0" style="border-collapse: collapse;" id='stock_record'>
-                        <thead class='thead-dark'>
-                            <tr>
-                                <th scope="col" v-for='col in columns'>
-                                    [[col]]
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for='row in tableData'>
-                                <td v-for='element in row'>
-                                    [[element]]
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>        
-                </div>
-            </div>
-        </div>
-    </div>
+    
+{% endblock %}
+{% block card %}
+    
 
 <script>
-    var table_vue = new Vue({
-        delimiters: ['[[', ']]'],
-        el:"#stock_record",
-        data:{
-            columns : ['庫存訂單編號','庫存訂貨日期','備註','商品名稱','訂貨數量'],
-            tableData : [],
-        }
-        })
 
-    
-    function renewtable(){
-        var time_input = $('select[name="select_time_limit"]').val();
-        $.ajax({
-            url:"{% url 'select_data:gettable'%}",
-            data:{'data':'renew_stock_record',
-                  'limit': time_input},
-            type:'POST',
-            success:function(x){
-                table_vue.tableData = x['form'];
-            }
-        })
+    function feedinput(val){
+        return feedinput_abc(null, 'stock_content', '#stock_form', null, "{% url 'select_data:gettable'%}", val)
     }
+    var table_vue = create_vue( [
+                { key: 'stock_order_po', label: '庫存訂單編號', sortable: true, class: 'text-center' },
+                { key: 'stock_order_date', label: '庫存訂貨日期', sortable: true, class: 'text-center' },
+                { key: 'note', label: '備註',sortable: true, class: 'text-center' },
+                { key: 'product_name', label: '商品名稱', sortable:true,  class: 'text-center' },
+                { key: 'order_num', label:'訂貨數量', sortable:true,  class: 'text-center'},
+                { key: 'actions', label:''}
+            ], 'stock_order_po', feedinput)
+    
+    function renewtable_for_this_page(){
+        renewtable('renew_stock_record', 
+        ['stock_order_po','stock_order_date','note','product_name','order_num'], 
+        "{% url 'select_data:gettable'%}")
+    }
+
     function product_tree(e){
         product_tree_url(e, "{% url 'select_data:gettable'%}")
-}
-    function check_for_stock_po(){
-        var result = true;
-        var order_stock_po = $("[name='order_stock_po']");
-        $.ajax({
-            url:"{% url 'select_data:gettable'%}",
-            data:{'data':'order_stock_po'},
-            type:"POST",
-            async:false,
-            success:function(x){
-                for(var k in x){
-                    if(k == order_stock_po){
-                        result = false;
-                        break
-                    }
-                }
-            }
-        })
-        return result;
     }
+
     function update_stock_order(){
-        if(required_all()&check_submit()&check_for_stock_po()){
-            var form = $("#stock_form");
-            $.ajax({
-                url:"{% url 'select_data:update_stock_order'%}",
-                type:"POST",
-                async:true,
-                data:form.serialize(),
-                dataType:"json",
-                success: function(result){
-                    if(result['result'] == "success"){
-                        $("#fade_message").show(0).delay(1000).queue(function(){$("#fade_message").hide()});
-                            setTimeout(function(){
-                            location.reload();
-                        }, 1000);
-                    }
-                
-                }
-            })
-        }else{
-            console.log('in');
-            // var message = warning_info_function('Warning','請確認輸入是否正確或庫存訂單編號是否重複輸入', '"badge badge-warning"');
-            var message = $('<div class="modal fade" role="dialog" aria-labelledby="tile" aria-hidden="true" tabindex="-1" id="check">'+
-                '<div class="modal-dialog modal-xl" role="document">'+
-                    '<div class="modal-content">'+
-                        '<div class="modal-header">'+
-                            '<h5 class="modal-title"  id="title">訂單查詢</h5>'+
-                            '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
-                                '<span aria-hidden="true">&times;</span>'+
-                                '</button>'+
-                        '</div>' +
-                        '<div class="modal-body">'+
-                         
-                        '</div>' +
-            
-                        '<div class="modal-footer">'+
-                            '<button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>'+
-                        '</div>'+
-                    '</div>'+
-                '</div>'+
-            '</div>')
-            // console.log(message)
-            $("#warning-info").append(message);
-            $("#check").modal('show');
-            return false;
-        }      
+        var condition = required_all()&check_submit()&check_abc("[name='order_stock_po']", 'order_stock_po', "{% url 'select_data:gettable'%}");
+        return update_abc(condition, '#stock_form', 'Warning','請確認輸入是否正確或庫存訂單編號是否重複輸入', '"badge badge-warning"',
+         "{% url 'select_data:update_stock_order'%}", null)
+    }
+
+    function modified_table(int){
+        return modified_table_abc(int,  "{% url 'select_data:update_stock_order'%}")
     }
 
     $(document).ready(function(){
-        $(".active").removeClass("active");
+        $("#buttomcard").removeAttr('hidden');
+        $("ul.navbar-nav").find('li.active').removeClass("active");
         $("#stock_bar").addClass("active");
-        $('select[name="select_time_limit"]').change(renewtable);
         $("a[href='/select_data/record/']").addClass("active");
-        renewtable();
+        renewtable_for_this_page()
+        $('select[name="select_time_limit"]').change(renewtable_for_this_page);
         producting( "{% url 'select_data:gettable'%}");
-        $("input[list='product_number_id']").on("input", product_tree);    
+        $("input[list='product_number_id']").on("input", product_tree);  
     })
 </script>
 {% endblock %}

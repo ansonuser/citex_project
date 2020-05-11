@@ -1,0 +1,267 @@
+[05/09/2020 05:57 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 05:58 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 05:58 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 05:58 PM][ERROR] Internal Server Error: /select_data/record_search/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 550, in record_search
+    print(request['login'])
+TypeError: 'WSGIRequest' object is not subscriptable
+[05/09/2020 05:58 PM][WARNING] Not Found: /favicon.ico
+[05/09/2020 05:58 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 05:59 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 05:59 PM][ERROR] Internal Server Error: /select_data/record_search/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 551, in record_search
+    print(request.session['user'])
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\contrib\sessions\backends\base.py", line 64, in __getitem__
+    return self._session[key]
+KeyError: 'user'
+[05/09/2020 05:59 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 05:59 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 05:59 PM][ERROR] Internal Server Error: /select_data/record_search/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 551, in record_search
+    print(request.session.dict())
+AttributeError: 'SessionStore' object has no attribute 'dict'
+[05/09/2020 05:59 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 06:00 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 06:32 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 06:32 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 08:44 PM][WARNING] Not Found: /select_data/product/{% url 'select_data' %}
+[05/09/2020 08:44 PM][WARNING] Not Found: /select_data/product/{% url 'select_data' %}
+[05/09/2020 08:45 PM][WARNING] Not Found: /select_data/customer/{% url 'select_data' %}
+[05/09/2020 08:54 PM][WARNING] Not Found: /select_data/index/
+[05/09/2020 08:57 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 08:58 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 08:59 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:02 PM][ERROR] Internal Server Error: /select_data/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 487, in index
+    for key in request.session.keys():
+RuntimeError: dictionary changed size during iteration
+[05/09/2020 09:02 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:02 PM][ERROR] Internal Server Error: /select_data/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 488, in index
+    for key in keys:
+RuntimeError: dictionary changed size during iteration
+[05/09/2020 09:04 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:04 PM][ERROR] Internal Server Error: /select_data/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 487, in index
+    keys = request.session.keys().tolist()
+AttributeError: 'dict_keys' object has no attribute 'tolist'
+[05/09/2020 09:04 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:04 PM][ERROR] Internal Server Error: /select_data/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 487, in index
+    keys = request.session.keys().to_list()
+AttributeError: 'dict_keys' object has no attribute 'to_list'
+[05/09/2020 09:04 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:04 PM][ERROR] Internal Server Error: /select_data/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 487, in index
+    keys = request.session.keys().copy()
+AttributeError: 'dict_keys' object has no attribute 'copy'
+[05/09/2020 09:04 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:05 PM][ERROR] Internal Server Error: /select_data/record_search/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 552, in record_search
+    if request.session['login'] == 'true':
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\contrib\sessions\backends\base.py", line 64, in __getitem__
+    return self._session[key]
+KeyError: 'login'
+[05/09/2020 09:07 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:07 PM][ERROR] Internal Server Error: /select_data/record_search/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 554, in record_search
+    if request.session['login'] == 'true':
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\contrib\sessions\backends\base.py", line 64, in __getitem__
+    return self._session[key]
+KeyError: 'login'
+[05/09/2020 09:07 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:08 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:09 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:10 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:10 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:11 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:12 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:28 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:28 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:28 PM][ERROR] Internal Server Error: /select_data/gettable/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 87, in gettable
+    result_record = Order.mymanager.get_actual_detail(**query_dict)
+  File "D:\Web_project\Query_develope\query_site\select_data\models.py", line 213, in get_actual_detail
+    """ + " AND o.order_no =:order_no"*(kwargs['order_no'] != '') + " AND o.company_number_id =:company_number_id "*(kwargs['company_number_id'] != '') + " AND o.finished =:finished"*(kwargs['finished'] != '') +\
+KeyError: 'company_number_id'
+[05/09/2020 09:29 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 09:36 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 09:36 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:31 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:34 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:41 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:42 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:42 PM][ERROR] Internal Server Error: /select_data/gettable/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 86, in gettable
+    result_record = Order.mymanager.get_actual_detail(**query_dict)
+  File "D:\Web_project\Query_develope\query_site\select_data\models.py", line 210, in get_actual_detail
+    if kwargs['finished'] == '1' | kwargs['finished'] == '':
+TypeError: unsupported operand type(s) for |: 'str' and 'str'
+[05/09/2020 10:42 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 10:42 PM][ERROR] Internal Server Error: /select_data/gettable/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 86, in gettable
+    result_record = Order.mymanager.get_actual_detail(**query_dict)
+  File "D:\Web_project\Query_develope\query_site\select_data\models.py", line 210, in get_actual_detail
+    if kwargs['finished'] == '1' | kwargs['finished'] == '':
+TypeError: unsupported operand type(s) for |: 'str' and 'str'
+[05/09/2020 10:42 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 10:43 PM][ERROR] Internal Server Error: /select_data/gettable/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 87, in gettable
+    result_record = Order.mymanager.get_actual_detail(**query_dict)
+  File "D:\Web_project\Query_develope\query_site\select_data\models.py", line 210, in get_actual_detail
+    if kwargs['finished'] == '1' | kwargs['finished'] == '':
+TypeError: unsupported operand type(s) for |: 'str' and 'str'
+[05/09/2020 10:44 PM][ERROR] Internal Server Error: /select_data/gettable/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 87, in gettable
+    result_record = Order.mymanager.get_actual_detail(**query_dict)
+  File "D:\Web_project\Query_develope\query_site\select_data\models.py", line 210, in get_actual_detail
+    if kwargs['finished'] == '1' | kwargs['finished'] == '':
+TypeError: unsupported operand type(s) for |: 'str' and 'str'
+[05/09/2020 10:44 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\views.py changed, reloading.
+[05/09/2020 10:44 PM][ERROR] Internal Server Error: /select_data/gettable/
+Traceback (most recent call last):
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\User\Anaconda3\envs\SQL\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "D:\Web_project\Query_develope\query_site\select_data\views.py", line 86, in gettable
+    result_record = Order.mymanager.get_actual_detail(**query_dict)
+  File "D:\Web_project\Query_develope\query_site\select_data\models.py", line 210, in get_actual_detail
+    if kwargs['finished'] == '1' | kwargs['finished'] == '':
+TypeError: unsupported operand type(s) for |: 'str' and 'str'
+[05/09/2020 10:45 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:45 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:46 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:46 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:46 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:46 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:47 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:47 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:47 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:48 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:49 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:49 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:49 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:50 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:50 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:50 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.
+[05/09/2020 10:51 PM][INFO] D:\Web_project\Query_develope\query_site\select_data\models.py changed, reloading.

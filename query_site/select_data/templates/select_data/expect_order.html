@@ -47,7 +47,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="note_expect_order">備註</label>
-                    <input type="text" class="form-control" name="note_expect_order">
+                    <input type="text" class="form-control" name="note">
                 </div>
             </div>
             <div class="form-row">
@@ -91,7 +91,7 @@
                         </button>
                     </div>  -->
                     <div class="btn-group mr-2" role="group" style="padding-top: 1.5rem ;">
-                        <button class="btn btn-secondary" type="submit" onclick="check_submit()">
+                        <button class="btn btn-secondary" type="button" onclick="submit_expect_order()">
                             新增
                         </button>
                     </div>
@@ -100,79 +100,8 @@
         </form>
     </div>
 </div>
-
-
-<div class="card" style="margin-top:3rem;">
-    <div class="card-header" style="background-color:white;">
-        <h2> <span class="badge badge-secondary">歷史紀錄</span></h2>
-    </div>
-    <div class="card-body" style="border-style: hidden; overflow-x:auto; ">
-        <div class="row" style="text-align: center; margin-bottom: .5rem;">
-            <label style="float:right; margin-bottom: .5rem;vertical-align: middle;">
-                修改時間為
-                <select name="select_time_limit">
-                    <option value="30">30</option>
-                    <option value="60">60</option>
-                    <option value="90">90</option>
-                    <option value="180">180</option>
-                    <option value="All"> All</option>
-                </select>
-                天內
-            </label>
-        </div>
-
-        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-            <table class="table table-bordered table-striped mb-0" style="border-collapse: collapse;" id='expect_order_table'>
-                <thead class='thead-dark'>
-                    <tr>
-                        <th scope="col" v-for='col in columns'>
-                            [[col]]
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for='row in tableData'>
-                        <td v-for='element in row'>
-                            [[element]]
-                        </td>
-                        <td style='white-space: nowrap'>
-                            <div class="btn-group mr-2" role="group">
-                                <button class="btn btn-secondary" type="button" name="edit"  data-toggle="modal" data-target="#modified_table" onclick="feedinput(this)">編輯</button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class='modal fade' v-show='isedit' role='dialog' aria-hidden="true" tabindex="-1" id="modified_table">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-            </div>
-            <div class="modal-body" name='modified-body'>
-                <!-- <form type='post'>
-                    <div class="form-row" v-for="eachrow in rows">
-                        <div class="form-group">
-                            <label :for="eachrow.key">[[eachrow.label ]]</label>
-                            <input type="text" :name="eachrow.key" class='form-control'>
-                        </div>
-                    </div>               
-                </form> -->
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary">修改</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+{% endblock %}
+{% block card %}
 
 <ol style="display:none" id="custom_table"></ol>
 
@@ -182,85 +111,28 @@
 {% load static %}
 <script>
 
-    var table_vue = new Vue({
-        delimiters: ['[[', ']]'],
-        el:"#expect_order_table",
-        data:{
-            columns : ['詢價編號','客戶編號','付款方式','填表人','詢價時間','需求時間','交貨期限','備註1','商品編號','商品數量', ''],
-            tableData : [],
-        }
-    })
-
-    $(document).ready(function(){
-        $("input[list=company_number_id]").on("input", custom_tree);
-        $("input[list='product_number_id']").on("input", product_tree);  
-        $('select[name="select_time_limit"]').change(renewtable)  
-        renewtable();
-        employeeing("{% url 'select_data:gettable'%}");
-        producting("{% url 'select_data:gettable'%}");
-        companying("{% url 'select_data:gettable'%}");
-    })
-    function renewtable(){
-        var time_input = $('select[name="select_time_limit"]').val();
-        $.ajax({
-            url:"{% url 'select_data:gettable'%}",
-            data:{'data':'renew_expect_order',
-                  'limit': time_input},
-            type:'POST',
-            success:function(x){
-                table_vue.tableData = x['form'];
-            }
-        })
+    function feedinput(val){
+        return feedinput_abc(null, 'ask_no_content_all', '#main_form', custom_tree, "{% url 'select_data:gettable'%}", val)
     }
 
-    function feedinput(obj){
-        var ask_no = obj.parentNode.parentNode.parentNode.children[0].innerText;
-        var result = $("[name='modified-body']");
-        result[0].innerHTML = '';
-        $.ajax({
-            url:"{% url 'select_data:gettable'%}",
-            data: { 'data':'ask_no_content_all','val':ask_no},
-            type:'POST',
-            success: function(data){
-                var keys = Object.keys(data);
-                var count = 0;
-                function recursive(current_row){
-                    if (current_row.getAttribute('name') === 'product_form' ){
-                        return result
-                    }else{
-                        result.append(current_row.outerHTML);
-                        do{
-                            var b = $(result).find('input[name="'+ keys[count]+ '"]').val(data[keys[count]]);
-                            if(b.length != 0){
-                                if(keys[count] == 'company_number_id'){
-                                    var c = $(result).find('[name="'+ keys[count]+ '"]');
-                                    c[0].nextElementSibling.remove();
-                                    c.val(data[keys[count]]).on("input", custom_tree).trigger("input");           
-                                }
-                                count += 1;
-                            }else{
-                                break;
-                            }
-                        }while(1)
-                        return recursive(current_row.nextElementSibling)
-                    }
-                }
-                var a = $('#main_form')[0].children[0].nextElementSibling
-                recursive(a);
-                $(result).append($('<div name="product_form"></div>'));
-                product = data['product'];
-                n = product.length;
-                count = 0
-                while(count != n){
-                    addcolumn_product(1);
-                    var a = $(result).find("input[list='product_number_id']")[count];
-                    $(a).val(product[count]['product_number_id']).on("input", product_tree).trigger("input");
-                    $(a.parentNode.parentNode.childNodes[5].lastElementChild).attr({'value':product[count]['product_amount']});
-                    count += 1;
-                }
-                addcolumn_product(1);
-            },
-        })
+    var table_vue = create_vue( [
+                    { key: 'ask_no', label: '詢價編號', sortable: true, class: 'text-center' },
+                    { key: 'company_number_id', label: '客戶編號', sortable: true, class: 'text-center' },
+                    { key: 'pay_way', label: '付款方式',sortable: true, class: 'text-center' },
+                    { key: 'employee_id', label: '填表人', sortable:true,  class: 'text-center' },
+                    { key: 'ask_date', label:'詢價時間', sortable:true,  class: 'text-center'},
+                    { key: 'demand_date', label:'需求時間' ,sortable: true, class: 'text-center'},
+                    { key: 'deadline', label:'交貨期限' ,sortable: true, class: 'text-center'},
+                    { key: 'note', label:'備註' ,sortable: true, class: 'text-center'},
+                    { key: 'product_name', label:'商品名稱' ,sortable: true, class: 'text-center'},
+                    { key: 'product_amount', label:'商品數量' ,sortable: true, class: 'text-center'},
+                    { key: 'actions', label:''}
+                ], 'ask_no', feedinput)
+    
+    function renewtable_for_this_page(){
+        renewtable('renew_expect_order', 
+        [ "ask_no", "company_number_id",'pay_way','employee_id','ask_date','demand_date', 'deadline',"note", 'product_name', 'product_amount'], 
+        "{% url 'select_data:gettable'%}")
     }
 
     function custom_tree(e){
@@ -270,9 +142,50 @@
     function product_tree(e){
         product_tree_url(e, "{% url 'select_data:gettable'%}")
     }
-    $(".active").removeClass("active");
-    $("#order_bar").addClass("active");
-    $("a[href='/select_data/expect_order/']").addClass("active");
+
+    function submit_expect_order(){
+        var condition = required_all()&check_submit();
+        return update_abc(condition, '#main_form', 'Warning','請確認輸入是否正確或詢價編號是否重複輸入', '"badge badge-warning"',
+         "{% url 'select_data:update_expect_order'%}", null)
+    }
+    function modified_table(int){
+        return modified_table_abc(int,  "{% url 'select_data:update_expect_order'%}")
+    }
+
+    $(document).ready(function(){
+        $("ul.navbar-nav").find('li.active').removeClass("active");
+        $("a").removeClass("active");
+        $("#order_bar").addClass("active");
+        $("a[href='/select_data/expect_order/']").addClass("active");
+        $("#buttomcard").removeAttr('hidden');
+        $("input[list=company_number_id]").on("input", custom_tree);
+        $("input[list='product_number_id']").on("input", product_tree);  
+        $('select[name="select_time_limit"]').change(renewtable_for_this_page);  
+        renewtable_for_this_page();
+        employeeing("{% url 'select_data:gettable'%}");
+        producting("{% url 'select_data:gettable'%}");
+        companying("{% url 'select_data:gettable'%}");
+    })
+
+
+
+    // function renewtable(){
+    //     var time_input = $('select[name="select_time_limit"]').val();
+    //     $.ajax({
+    //         url:"{% url 'select_data:gettable'%}",
+    //         data:{'data':'renew_expect_order',
+    //               'limit': time_input},
+    //         type:'POST',
+    //         success:function(x){
+    //             table_vue.tableData = x['form'];
+    //         }
+    //     })
+    // }
+    
+
+
+    
+
     
 </script>
 

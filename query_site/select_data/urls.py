@@ -18,5 +18,7 @@ urlpatterns = [
     path('gettable/', views.gettable, name = 'gettable'),
     path('update_actual_order/', views.update_actual_order, name = 'update_actual_order'),
     path('update_stock_order/', views.update_stock_order, name = 'update_stock_order'),
-    path('update_stock_order_detail/', views.update_stock_order_detail, name = 'update_stock_order_detail')
+    path('update_stock_order_detail/', views.update_stock_order_detail, name = 'update_stock_order_detail'),
+    path('update_expect_order/', views.update_expect_order, name = 'update_expect_order'),
+    path('login/', views.login, name = 'login')
 ]

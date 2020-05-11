@@ -80,13 +80,13 @@
             
                         <div class="modal-body">
                             <div class="row">
-                                <div class="card col-md-3" style="border-style: hidden; left:0px;">
+                                <div class="card col-md-2" style="border-style: hidden; left:0px;">
                                     <div class="card-body">
                                         <div name="option_block" class="text-left col-md-12">
                                             <label for="select_fe" style="font-size: 20px;font-weight: bolder;">查詢欄位</label>
                                             <select  class="form-control" name="select_fe" id="select_fe" style="border:2px solid;margin-bottom: 10px;">
                                                 <option value="order_no">訂單編號</option>
-                                                <option value="company">公司</option>        
+                                                <option value="company">客戶編號</option>        
                                                 <option value="rest_date">交期</option>
                                                 <option value="finished">訂單狀態</option>
                                                 <option value="deadline">交貨期限</option>
@@ -102,12 +102,11 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="card col-md-9"  style="border-style: hidden; overflow-x:auto;">
+                                <div class="card col-md-10"  style="border-style: hidden; overflow-x:auto;">
                                     <table class="table" style="margin-top: 20px;" id='search_order_table'>
-                                        <thead class='thead-light'>
-                                            <tr>
-                                                <th scope="col" v-for='col in columns'>
+                                        <thead class='thead-light' role='rowgroup'>
+                                            <tr role='row'>
+                                                <th role="columnheader" scope="col"  tabindex="0" aria-colindex="1" aria-sort="none" class="text-center" v-for='col in columns'>
                                                     [[col]]
                                                 </th>
                                             </tr>
@@ -319,7 +318,7 @@
               
             }else if(select.val()==="finished"){
                 new_label.attr({for:'finished'}).text("訂單狀態");
-                new_input.attr({name:'finished'});
+                var new_input = $('<select class="form-control" name="finished"><option value="false">未完成</option><option value="true">完成</option></select>')
             }else if(select.val()==="deadline"){
                 new_label.attr({for:'deadline'}).text("交貨期限");
                 var $new_input = $('<input type="text" class="form-control">');   
